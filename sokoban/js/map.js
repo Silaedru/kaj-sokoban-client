@@ -17,7 +17,7 @@ const MapObject = {
     TARGET: 3
 };
 
-class Map {
+class SokobanMap {
     transformPositionToCoords(position) {
         return {
             x: position % this._height,
@@ -34,6 +34,11 @@ class Map {
 
         const floorAppends = [];
 
+        const targetAppends = this._targets.map(target => {
+            const coords = this.transformPositionToCoords(target);
+            return new GridRenderable(Resources.Map.target.resource, coords.x, coords.y);
+        });
+
         const rtn = this._mapObjects.map(object => {
             const coords = this.transformPositionToCoords(pos++);
             let floorTile = new GridRenderable(Resources.Map.floor.resource, coords.x, coords.y);
@@ -42,7 +47,6 @@ class Map {
             switch (object) {
                 case MapObject.WALL: rtn = new GridRenderable(Resources.Map.wall.resource, coords.x, coords.y); break;
                 case MapObject.CRATE: rtn =  new GridRenderable(Resources.Map.crate.resource, coords.x, coords.y); break;
-                case MapObject.TARGET: rtn =  new GridRenderable(Resources.Map.target.resource, coords.x, coords.y); break;
             }
 
             if (rtn == null)
@@ -52,7 +56,7 @@ class Map {
             return rtn;
         });
 
-        return floorAppends.concat(rtn);
+        return floorAppends.concat(rtn).concat(targetAppends);
     }
 
     //return true if collision occurred
@@ -90,10 +94,11 @@ class Map {
         if (this._mapObjects[checkedPosition] === MapObject.WALL)
             return true;
 
+        // crate
         if (this._mapObjects[checkedPosition] === MapObject.CRATE) {
             if (!crateMovable)
                 return true;
-            console.log("crate should move");//todo: handle moving crate
+
             const coords = this.transformPositionToCoords(checkedPosition);
             const crateBlocked = this.handlePlayerMove(coords.x, coords.y, direction, false);
 
@@ -109,13 +114,23 @@ class Map {
 
                 this._mapObjects[checkedPosition] = MapObject.FLOOR;
                 this._mapObjects[newCratePosition] = MapObject.CRATE;
-                //todo: check victoryCondition
             }
 
             return crateBlocked;
         }
 
         return false;
+    }
+
+    checkGameWon() {
+        let won = true;
+
+        this._targets.forEach(target => {
+           if (this._mapObjects[target] !== MapObject.CRATE)
+               won = false;
+        });
+
+        return won;
     }
 
     getPlayerStartCoords() {
@@ -130,9 +145,9 @@ class Map {
         this._width = mapData.width;
         this._height = mapData.height;
         this._mapObjects = Array.apply(null, Array(this._width * this._height)).map(() => MapObject.FLOOR);
+        this._targets = mapData.targets;
 
         mapData.walls.forEach(position => this._mapObjects[position] = MapObject.WALL);
-        mapData.targets.forEach(position => this._mapObjects[position] = MapObject.TARGET);
         mapData.crates.forEach(position => this._mapObjects[position] = MapObject.CRATE);
     }
 }

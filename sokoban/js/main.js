@@ -9,36 +9,59 @@ const KeyCode = {
     KEY_D: 68,
     KEY_W: 87,
     KEY_S: 83,
+
+    KEY_BACKSPACE: 8,
 };
 
 function attachListeners(target, game) {
     target.addEventListener("keyup", (e) => {
-        e.preventDefault();
-
        switch (e.keyCode) {
            case KeyCode.KEY_LEFT:
            case KeyCode.KEY_A:
-               game.moveLeft();
+               game.move(Direction.LEFT);
                break;
 
            case KeyCode.KEY_RIGHT:
            case KeyCode.KEY_D:
-               game.moveRight();
+               game.move(Direction.RIGHT);
                break;
 
            case KeyCode.KEY_DOWN:
            case KeyCode.KEY_S:
-               game.moveDown();
+               game.move(Direction.DOWN);
                break;
 
            case KeyCode.KEY_UP:
            case KeyCode.KEY_W:
-               game.moveUp();
+               game.move(Direction.UP);
                break;
+
+           case KeyCode.KEY_BACKSPACE:
+               game.undoMove();
+               break;
+
+           default:
+               return;
        }
+
+       e.preventDefault();
     });
 
     target.addEventListener("keydown", (e) => {
+        switch (e.keyCode) {
+            case KeyCode.KEY_LEFT:
+            case KeyCode.KEY_A:
+            case KeyCode.KEY_RIGHT:
+            case KeyCode.KEY_D:
+            case KeyCode.KEY_DOWN:
+            case KeyCode.KEY_S:
+            case KeyCode.KEY_UP:
+            case KeyCode.KEY_W:
+            case KeyCode.KEY_BACKSPACE:
+                break;
+            default:
+                return;
+        }
         e.preventDefault();
     });
 }
@@ -50,7 +73,7 @@ function init() {
 
         attachListeners(document, game);
 
-        window.requestAnimationFrame(() => game.render());
+        game.render();
         console.log("ready");
     });
 }
