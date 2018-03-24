@@ -1,0 +1,28 @@
+
+body {
+    font-family: helvetica, arial, sans-serif;
+    max-width: 1000px;
+    margin: auto;
+    border: 1px solid greenyellow;
+}
+
+nav {
+    text-align: center;
+}
+
+nav > ul > li {
+    display: inline-block;
+    border: 1px solid maroon;
+}
+
+.canvas-container {
+    border: 2px solid black;
+    max-height: 500px;
+    text-align: center;
+    position: relative;
+    /*width: 100%;*/
+}
+
+.canvas-container canvas, #xxx {
+    border: 2px solid red;
+}
