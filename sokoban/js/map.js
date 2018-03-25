@@ -20,13 +20,13 @@ const MapObject = {
 class SokobanMap {
     transformPositionToCoords(position) {
         return {
-            x: position % this._height,
-            y: Math.floor(position / this._height)
+            x: position % this._width,
+            y: Math.floor(position / this._width)
         }
     }
 
     transformCoordsToPosition(x, y) {
-        return y * this._height + x;
+        return y * this._width + x;
     }
 
     getRenderableObjects() {
@@ -81,8 +81,8 @@ class SokobanMap {
                     return true;
                 break;
 
-            case Direction.UP: checkedPosition = currentPosition - this._height; break;
-            case Direction.DOWN: checkedPosition = currentPosition + this._height; break;
+            case Direction.UP: checkedPosition = currentPosition - this._width; break;
+            case Direction.DOWN: checkedPosition = currentPosition + this._width; break;
         }
 
 
@@ -108,8 +108,8 @@ class SokobanMap {
                 switch (direction) {
                     case Direction.LEFT: newCratePosition -= 1; break;
                     case Direction.RIGHT: newCratePosition += 1; break;
-                    case Direction.UP: newCratePosition -= this._height; break;
-                    case Direction.DOWN: newCratePosition += this._height; break;
+                    case Direction.UP: newCratePosition -= this._width; break;
+                    case Direction.DOWN: newCratePosition += this._width; break;
                 }
 
                 this._mapObjects[checkedPosition] = MapObject.FLOOR;

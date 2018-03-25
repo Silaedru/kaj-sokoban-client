@@ -36,9 +36,22 @@ class CanvasGridRenderer {
         context.drawImage(renderable.getImage(), coords.x, coords.y, coords.width, coords.height);
     }
 
+    resizeCanvas() {
+        const maxCellDimension = 40;
+        const canvasContainer = this._canvas.parentElement;
+
+        const cellDimension = Math.min(Math.floor(canvasContainer.offsetWidth / this._gridWidth), maxCellDimension);
+
+        this._canvas.width = cellDimension * this._gridWidth;
+        this._canvas.height = cellDimension * this._gridHeight;
+    }
+
     constructor(canvas, gridWidth, gridHeight) {
         this._canvas = canvas;
         this._gridWidth = gridWidth;
         this._gridHeight = gridHeight;
+
+        this.resizeCanvas();
+        window.addEventListener("resize", () => this.resizeCanvas(), false);
     }
 }

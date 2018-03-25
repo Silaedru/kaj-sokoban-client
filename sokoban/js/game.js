@@ -71,8 +71,8 @@ class Game {
 
     constructor(canvas) {
         this._map = new SokobanMap("{\n" +
-            " \"width\":10,\n" +
-            " \"height\":10,\n" +
+            " \"width\":20,\n" +
+            " \"height\":12,\n" +
             "\n" +
             " \"walls\":[8,9,10,11,12,64],\n" +
             " \"crates\":[45, 48],\n" +
@@ -82,9 +82,11 @@ class Game {
 
         const playerStartCoords = this._map.getPlayerStartCoords();
         this._player = new Player(playerStartCoords.x, playerStartCoords.y);
-        this._renderer = new CanvasGridRenderer(canvas, 15, 15);
+        this._renderer = new CanvasGridRenderer(canvas, this._map._width, this._map._height);
 
         this._moves = [];
         this._states = [];
+
+        window.addEventListener("resize", () => this.render(), true);
     }
 }

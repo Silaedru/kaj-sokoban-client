@@ -17,12 +17,12 @@ nav > ul > li {
 
 .canvas-container {
     border: 2px solid black;
-    max-height: 500px;
     text-align: center;
-    position: relative;
-    /*width: 100%;*/
+    margin: auto;
+    width: 95%;
 }
 
-.canvas-container canvas, #xxx {
+.canvas-container canvas {
     border: 2px solid red;
+    margin: auto;
 }
