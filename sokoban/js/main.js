@@ -16,6 +16,7 @@ const tempMapData = "{\n" +
     "}";
 
 let game = null;
+let controlsInit = false;
 
 function loadGame() {
     if (game === null) {
@@ -29,6 +30,8 @@ function loadGame() {
             document.addEventListener("keydown", game.keyDownListener);
 
             game.render();
+
+            initGameControls();
         });
     }
 }
@@ -37,6 +40,61 @@ function pauseGame() {
     if (game instanceof Game) {
         document.removeEventListener("keyup", game.keyUpListener);
         document.removeEventListener("keydown", game.keyDownListener);
+    }
+}
+
+function initGameControls() {
+    if (!controlsInit) {
+        document.querySelectorAll(".game-controls button").forEach(button => {
+            const action = button.dataset.action;
+            let desiredEffect = null;
+
+            switch (action) {
+                case "up":
+                    desiredEffect = () => game.move(Direction.UP);
+                    break;
+                case "left":
+                    desiredEffect = () => game.move(Direction.LEFT);
+                    break;
+                case "down":
+                    desiredEffect = () => game.move(Direction.DOWN);
+                    break;
+                case "right":
+                    desiredEffect = () => game.move(Direction.RIGHT);
+                    break;
+                case "undo":
+                    desiredEffect = () => game.undoMove();
+                    break;
+            }
+
+            if (desiredEffect) {
+                button.addEventListener("click", () => {
+                    try {
+                        desiredEffect();
+                    } catch (e) {
+                        // ignore error
+                    }
+                });
+            }
+        });
+
+        document.querySelector(".game-controls-settings input[data-action='show-controls']").addEventListener("change", (e) => {
+            const visible = e.target.checked;
+
+            if (visible)
+                document.querySelector(".game-controls").classList.remove("hidden");
+            else
+                document.querySelector(".game-controls").classList.add("hidden");
+        });
+
+        // this listener and the line after it (enabling draggable on the .game-controls) are the only jquery dependencies in this project
+        document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", (e) => {
+           const action = e.target.checked ? "disable" : "enable";
+            $(".game-controls").draggable(action);
+        });
+        $(".game-controls").draggable();
+
+        controlsInit = true;
     }
 }
 

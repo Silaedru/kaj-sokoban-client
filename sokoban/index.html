@@ -3,10 +3,19 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+
         <title>Sokoban</title>
 
-        <link rel="stylesheet" href="css/media.css">
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+
+        <link rel="stylesheet" href="css/lib/jquery-ui.min.css">
+        <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/lib/jquery.ui.touch-punch.min.js"></script>
+
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/media.css">
+        <link rel="stylesheet" href="css/controls.css">
 
         <script type="text/javascript" src="js/resources.js"></script>
         <script type="text/javascript" src="js/player.js"></script>
@@ -35,7 +44,7 @@
             <h1>Sokoban</h1>
         </header>
 
-        <nav>
+        <nav class="unselectable">
             <ul>
                 <li>Home</li>
                 <li>Play</li>
@@ -70,13 +79,36 @@
             </p>
         </section>
 
-        <section id="playSection" class="center-content">
+        <section id="playSection" class="text-center">
             <div class="canvas-container">
                 <canvas></canvas>
             </div>
+
+            <div class="game-controls unselectable">
+                <div>
+                    <button class="horizontal-placeholder"></button>
+                    <button data-action="up">&#x25B2;</button>
+                    <button class="horizontal-placeholder"></button>
+                    <button data-action="undo"></button>
+                </div>
+
+                <div>
+                    <button data-action="left">&#x25C4;</button>
+                    <button data-action="down">&#x25BC;</button>
+                    <button data-action="right">►</button>
+                    <button class="horizontal-placeholder">&#x25BA;</button>
+                </div>
+            </div>
+
+            <div class="game-controls-settings unselectable">
+                <label><input type="checkbox" data-action="show-controls" checked><span class="checkmark"></span>Show controls</label>
+                <label><input type="checkbox" data-action="lock-controls" checked><span class="checkmark"></span>Lock controls</label>
+            </div>
+
+            <div class="clear-float"></div>
         </section>
 
-        <footer class="center-content">
+        <footer class="flex-center">
             &copy; 2018
         </footer>
     </body>
