@@ -1,106 +1,85 @@
 
-const KeyCode = {
-    KEY_LEFT: 37,
-    KEY_RIGHT: 39,
-    KEY_UP: 38,
-    KEY_DOWN: 40,
-
-    KEY_A: 65,
-    KEY_D: 68,
-    KEY_W: 87,
-    KEY_S: 83,
-
-    KEY_BACKSPACE: 8,
-};
-
 const sections = [
-  "#home",
-  "#play",
-  "#about"
+    {name: "#home", loadAction: null, unloadAction: null},
+    {name: "#play", loadAction: loadGame, unloadAction: pauseGame},
+    {name: "#about", loadAction: null, unloadAction: null}
 ];
 
-function attachListeners(game) {
-    document.addEventListener("keyup", (e) => {
-       switch (e.keyCode) {
-           case KeyCode.KEY_LEFT:
-           case KeyCode.KEY_A:
-               game.move(Direction.LEFT);
-               break;
+const tempMapData = "{\n" +
+    " \"width\":20,\n" +
+    " \"height\":12,\n" +
+    "\n" +
+    " \"walls\":[8,9,10,11,12,64],\n" +
+    " \"crates\":[45, 48],\n" +
+    " \"targets\":[37],\n" +
+    " \"player\":24\n" +
+    "}";
 
-           case KeyCode.KEY_RIGHT:
-           case KeyCode.KEY_D:
-               game.move(Direction.RIGHT);
-               break;
+let game = null;
 
-           case KeyCode.KEY_DOWN:
-           case KeyCode.KEY_S:
-               game.move(Direction.DOWN);
-               break;
+function loadGame() {
+    if (game === null) {
+        game = 0; // to make sure game is no longer "null"
 
-           case KeyCode.KEY_UP:
-           case KeyCode.KEY_W:
-               game.move(Direction.UP);
-               break;
+        loadResources().then(() => {
+            const canvas = document.querySelector("canvas");
+            game = new Game(tempMapData, canvas);
 
-           case KeyCode.KEY_BACKSPACE:
-               game.undoMove();
-               break;
+            document.addEventListener("keyup", game.keyUpListener);
+            document.addEventListener("keydown", game.keyDownListener);
 
-           default:
-               return;
-       }
-
-       e.preventDefault();
-    });
-
-    document.addEventListener("keydown", (e) => {
-        switch (e.keyCode) {
-            case KeyCode.KEY_LEFT:
-            case KeyCode.KEY_A:
-            case KeyCode.KEY_RIGHT:
-            case KeyCode.KEY_D:
-            case KeyCode.KEY_DOWN:
-            case KeyCode.KEY_S:
-            case KeyCode.KEY_UP:
-            case KeyCode.KEY_W:
-            case KeyCode.KEY_BACKSPACE:
-                break;
-            default:
-                return;
-        }
-        e.preventDefault();
-    });
+            game.render();
+        });
+    }
 }
 
-function redirectToPageLocation(section) {
+function pauseGame() {
+    if (game instanceof Game) {
+        document.removeEventListener("keyup", game.keyUpListener);
+        document.removeEventListener("keydown", game.keyDownListener);
+    }
+}
+
+function findSectionByHashName(sectionHashName) {
+    const rtn = sections.filter(section => section.name === sectionHashName);
+
+    if (rtn.length === 1)
+        return rtn[0];
+
+    return sections[0];
+}
+
+function redirectToPageSection(section) {
+    let currentSection = sections[0];
+
+    if (sections.map(section => section.name).includes(document.location.hash))
+        currentSection = document.location.hash;
+
+    // perform current section unloading
+    const currentSectionObject = findSectionByHashName(currentSection);
+    if (currentSectionObject.unloadAction != null)
+        currentSectionObject.unloadAction();
+
+    // change the section
     document.location.hash = section;
-    loadPage();
+    loadSection();
 }
 
-function initGame() {
-    loadResources().then(() => {
-        const canvas = document.querySelector("canvas");
-        const game = new Game(canvas);
+function loadSection() {
+    let sectionName = sections[0].name;
 
-        attachListeners(game);
-
-        game.render();
-        console.log("ready");
-    });
-}
-
-function loadPage() {
-    let section = sections[0];
-
-    if (sections.includes(document.location.hash))
-        section = document.location.hash;
+    if (sections.map(section => section.name).includes(document.location.hash))
+        sectionName = document.location.hash;
 
     // hide all page parts
     sections.forEach(section => {
-       document.querySelector(section + "Section").style.display = "none";
+       document.querySelector(section.name + "Section").style.display = "none";
     });
 
     // make the selected part visible
-    document.querySelector(section+ "Section").style.display = "block";
-}
+    document.querySelector(sectionName + "Section").style.display = "block";
 
+    const sectionObject = findSectionByHashName(sectionName);
+    if (sectionObject.loadAction != null)
+        sectionObject.loadAction();
+}

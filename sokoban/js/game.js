@@ -1,5 +1,71 @@
 
+const KeyCode = {
+    KEY_LEFT: 37,
+    KEY_RIGHT: 39,
+    KEY_UP: 38,
+    KEY_DOWN: 40,
+
+    KEY_A: 65,
+    KEY_D: 68,
+    KEY_W: 87,
+    KEY_S: 83,
+
+    KEY_BACKSPACE: 8,
+};
+
 class Game {
+    keyDownListener(e) {
+        // prevent default behaviour when key that is processed separately is pressed
+        switch (e.keyCode) {
+            case KeyCode.KEY_LEFT:
+            case KeyCode.KEY_A:
+            case KeyCode.KEY_RIGHT:
+            case KeyCode.KEY_D:
+            case KeyCode.KEY_DOWN:
+            case KeyCode.KEY_S:
+            case KeyCode.KEY_UP:
+            case KeyCode.KEY_W:
+            case KeyCode.KEY_BACKSPACE:
+                break;
+            default:
+                return;
+        }
+        e.preventDefault();
+    }
+
+    keyUpListener(e) {
+        switch (e.keyCode) {
+            case KeyCode.KEY_LEFT:
+            case KeyCode.KEY_A:
+                this.move(Direction.LEFT);
+                break;
+
+            case KeyCode.KEY_RIGHT:
+            case KeyCode.KEY_D:
+                this.move(Direction.RIGHT);
+                break;
+
+            case KeyCode.KEY_DOWN:
+            case KeyCode.KEY_S:
+                this.move(Direction.DOWN);
+                break;
+
+            case KeyCode.KEY_UP:
+            case KeyCode.KEY_W:
+                this.move(Direction.UP);
+                break;
+
+            case KeyCode.KEY_BACKSPACE:
+                this.undoMove();
+                break;
+
+            default:
+                return;
+        }
+
+        e.preventDefault();
+    }
+
     render() {
         window.requestAnimationFrame(() => {
             const r = this._renderer;
@@ -69,16 +135,8 @@ class Game {
         }
     }
 
-    constructor(canvas) {
-        this._map = new SokobanMap("{\n" +
-            " \"width\":20,\n" +
-            " \"height\":12,\n" +
-            "\n" +
-            " \"walls\":[8,9,10,11,12,64],\n" +
-            " \"crates\":[45, 48],\n" +
-            " \"targets\":[37],\n" +
-            " \"player\":24\n" +
-            "}");
+    constructor(mapData, canvas) {
+        this._map = new SokobanMap(mapData);
 
         const playerStartCoords = this._map.getPlayerStartCoords();
         this._player = new Player(playerStartCoords.x, playerStartCoords.y);
@@ -87,6 +145,7 @@ class Game {
         this._moves = [];
         this._states = [];
 
+        // rerender on resize
         window.addEventListener("resize", () => this.render(), true);
     }
 }
