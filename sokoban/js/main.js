@@ -13,8 +13,14 @@ const KeyCode = {
     KEY_BACKSPACE: 8,
 };
 
-function attachListeners(target, game) {
-    target.addEventListener("keyup", (e) => {
+const sections = [
+  "#home",
+  "#play",
+  "#about"
+];
+
+function attachListeners(game) {
+    document.addEventListener("keyup", (e) => {
        switch (e.keyCode) {
            case KeyCode.KEY_LEFT:
            case KeyCode.KEY_A:
@@ -47,7 +53,7 @@ function attachListeners(target, game) {
        e.preventDefault();
     });
 
-    target.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", (e) => {
         switch (e.keyCode) {
             case KeyCode.KEY_LEFT:
             case KeyCode.KEY_A:
@@ -66,14 +72,35 @@ function attachListeners(target, game) {
     });
 }
 
-function init() {
+function redirectToPageLocation(section) {
+    document.location.hash = section;
+    loadPage();
+}
+
+function initGame() {
     loadResources().then(() => {
         const canvas = document.querySelector("canvas");
         const game = new Game(canvas);
 
-        attachListeners(document, game);
+        attachListeners(game);
 
         game.render();
         console.log("ready");
     });
 }
+
+function loadPage() {
+    let section = sections[0];
+
+    if (sections.includes(document.location.hash))
+        section = document.location.hash;
+
+    // hide all page parts
+    sections.forEach(section => {
+       document.querySelector(section + "Section").style.display = "none";
+    });
+
+    // make the selected part visible
+    document.querySelector(section+ "Section").style.display = "block";
+}
+

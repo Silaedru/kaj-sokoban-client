@@ -21,13 +21,16 @@ function loadResources() {
 
     Object.keys(Resources).forEach(type => {
         Object.keys(Resources[type]).forEach(resource => {
-            resourcesToLoad++;
-            const resourceData = new Image();
-            resourceData.onload = () => {
-                Resources[type][resource].resource = resourceData;
-                resourcesLoaded++;
-            };
-            resourceData.src = Resources[type][resource].path;
+            // only load the resource if it hasn't been loaded yet
+            if (Resources[type][resource].resource === null) {
+                resourcesToLoad++;
+                const resourceData = new Image();
+                resourceData.onload = () => {
+                    Resources[type][resource].resource = resourceData;
+                    resourcesLoaded++;
+                };
+                resourceData.src = Resources[type][resource].path;
+            }
         });
     });
 

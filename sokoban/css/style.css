@@ -1,28 +1,107 @@
-
 body {
     font-family: helvetica, arial, sans-serif;
-    max-width: 1000px;
+    max-width: 900px;
     margin: auto;
-    border: 1px solid greenyellow;
+    padding: 0 0.75em;
+    background-color: #ededed;
 }
 
-nav {
+h1 {
+    text-transform: uppercase;
     text-align: center;
+    text-shadow: 2px 2px #ababab;
+    margin: 5px;
+    font-size: 30pt;
+    letter-spacing: 5px;
+}
+
+nav, footer, section, header {
+    border: 1px solid #707070;
+    border-radius: 4px;
+    box-shadow: 3px 3px #cecece;
+    background: #fafafa;
+}
+
+section, header {
+    margin: 0.8em 0.25em;
+    padding: 0.25em 1em;
+}
+
+section {
+    max-height: 37em;
+    overflow-y: auto;
+    display: none;
+}
+
+nav, footer {
+    margin: 0 0.25em;
+    padding: 0 0.25em;
+    text-align: center;
+}
+
+footer {
+    height: 3em;
+}
+
+nav > ul {
+    padding: 0;
+    margin: 0;
+    font-size: 0; /* removes the gap between lis */
+
+    /*make text unselectable*/
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 nav > ul > li {
     display: inline-block;
-    border: 1px solid maroon;
+    font-size: 18pt;
+    padding: 0.4em 0;
+    width: 6.5em;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-left: 1px dotted #707070;
+}
+
+nav > ul > li:last-child {
+    border-right: 1px dotted #707070;
+}
+
+nav > ul > li::after {
+    content: " «";
+}
+
+nav > ul > li::before {
+    content: "» ";
+}
+nav > ul > li:hover {
+    background: #d5d5d5;
+    transition: 600ms ease-out;
+}
+
+h1::first-letter {
+    font-size: 125%;
+}
+
+.center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+canvas {
+    border: 2px solid #707070;
+    border-radius: 3px;
 }
 
 .canvas-container {
-    border: 2px solid black;
     text-align: center;
-    margin: auto;
-    width: 95%;
+    margin: 1em;
 }
 
-.canvas-container canvas {
-    border: 2px solid red;
-    margin: auto;
+section p {
+    margin: 0.25em 0;
 }

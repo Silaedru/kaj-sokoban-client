@@ -123,14 +123,7 @@ class SokobanMap {
     }
 
     checkGameWon() {
-        let won = true;
-
-        this._targets.forEach(target => {
-           if (this._mapObjects[target] !== MapObject.CRATE)
-               won = false;
-        });
-
-        return won;
+        return this._targets.every(target => this._mapObjects[target] === MapObject.CRATE);
     }
 
     getPlayerStartCoords() {
