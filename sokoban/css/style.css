@@ -33,14 +33,16 @@ nav a {
     width: 6.5em;
 }
 
+nav > input[type="checkbox"], nav > input[type="checkbox"]+label {
+    display: none;
+}
+
 section, header {
     margin: 0.8em 0.25em;
     padding: 0.25em 1em;
 }
 
 section:not(:target) {
-    /*max-height: 45em;
-    overflow-y: auto;*/
     display: none;
 }
 
@@ -59,7 +61,7 @@ footer {
 }
 
 .unselectable {
-    /*make text unselectable*/
+    /* makes text unselectable */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -70,7 +72,7 @@ footer {
 nav > ul {
     padding: 0;
     margin: 0;
-    font-size: 0; /* removes the gap between lis */
+    font-size: 0; /* removes weird gap between lis (menu elements) */
 }
 
 nav > ul > li {
@@ -84,13 +86,6 @@ nav > ul > li:last-child {
     border-right: 1px dotted #707070;
 }
 
-nav > ul > li::after {
-    content: " «";
-}
-
-nav > ul > li:before {
-    content: "» ";
-}
 nav > ul > li:hover {
     background: #d5d5d5;
     transition: 600ms ease-out;
@@ -129,5 +124,5 @@ section p {
 }
 
 #play > div {
-    /*display: none;*/
+    display: none;
 }

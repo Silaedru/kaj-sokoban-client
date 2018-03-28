@@ -1,6 +1,20 @@
 
-const sectionActions = [
-    {name: "play", loadAction: loadGame, unloadAction: pauseGame}
+const SectionActions = [
+    {
+        name: "play",
+        loadAction: () => {
+            if (gameState < 0) {
+                advanceGameState();
+                document.querySelector("button[data-action='start-game']").addEventListener("click", () => advanceGameState());
+                document.querySelector("button[data-action='return-to-map-select']").addEventListener("click", () => advanceGameState());
+            }
+
+            if (gameState == GameState.ACTIVE_GAME)
+                registerKeyListeners();
+
+        },
+        unloadAction: removeKeyListeners
+    }
 ];
 
 const GameState = {
@@ -28,14 +42,16 @@ function advanceGameState() {
 
     document.querySelectorAll("#play > div").forEach(element => element.style.display = "none");
 
-    //todo: optimize
     switch (gameState) {
         case GameState.MAP_SELECT:
+            removeKeyListeners();
             document.querySelector("#play > div[data-game-state ~= 'map-select']").style.display = "block";
             break;
 
         case GameState.ACTIVE_GAME:
             document.querySelector("#play > div[data-game-state ~= 'active-game']").style.display = "block";
+
+            registerKeyListeners();
 
             if (game === null) {
                 game = 0; // to make sure game is no longer "null"
@@ -43,10 +59,6 @@ function advanceGameState() {
                 loadResources().then(() => {
                     const canvas = document.querySelector("canvas");
                     game = new Game(tempMapData, canvas, () => advanceGameState());
-
-                    document.addEventListener("keyup", game.keyUpListener);
-                    document.addEventListener("keydown", game.keyDownListener);
-
                     game.render();
 
                     initGameControls();
@@ -55,20 +67,24 @@ function advanceGameState() {
             break;
 
         case GameState.FINISHED_GAME:
+            removeKeyListeners();
             document.querySelector("#play > div[data-game-state ~= 'finished-game']").style.display = "block";
+            game = null;
             break;
     }
 }
 
-function loadGame() {
-    advanceGameState();
+gameKeyDownEventListener = e => game.keyDownListener(e);
+gameKeyUpEventListener = e => game.keyUpListener(e);
+
+function registerKeyListeners() {
+    document.addEventListener("keyup", gameKeyUpEventListener);
+    document.addEventListener("keydown", gameKeyDownEventListener);
 }
 
-function pauseGame() {
-    if (game instanceof Game) {
-        document.removeEventListener("keyup", game.keyUpListener);
-        document.removeEventListener("keydown", game.keyDownListener);
-    }
+function removeKeyListeners() {
+    document.removeEventListener("keyup", gameKeyUpEventListener);
+    document.removeEventListener("keydown", gameKeyDownEventListener);
 }
 
 function initGameControls() {
@@ -113,6 +129,14 @@ function initGameControls() {
                 document.querySelector(".game-controls").classList.add("hidden");
         });
 
+        document.querySelector("button[data-action='restart-game']").addEventListener("click", () => alert("restart"));
+        document.querySelector("button[data-action='abandon-game']").addEventListener("click", () => {
+            //todo: add confirmation
+            game = null;
+            gameState = -1;
+            advanceGameState();
+        });
+
         // this listener and the line after it (enabling draggable on the .game-controls) are the only jquery dependencies in this project
         document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", (e) => {
             const action = e.target.checked ? "disable" : "enable";
@@ -125,7 +149,7 @@ function initGameControls() {
 }
 
 function findSectionByHashName(sectionHashName) {
-    const rtn = sectionActions.filter(section => section.name === sectionHashName);
+    const rtn = SectionActions.filter(section => section.name === sectionHashName);
 
     if (rtn.length === 1)
         return rtn[0];

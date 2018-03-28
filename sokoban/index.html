@@ -9,28 +9,43 @@
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable:no,shrink-to-fit=no">
 
         <link rel="stylesheet" href="css/lib/jquery-ui.min.css">
-        <script type="text/javascript" src="js/lib/jquery-3.3.1.min.js"></script>
-        <script type="text/javascript" src="js/lib/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="js/lib/jquery.ui.touch-punch.min.js"></script>
+        <script src="js/lib/jquery-3.3.1.min.js"></script>
+        <script src="js/lib/jquery-ui.min.js"></script>
+        <script src="js/lib/jquery.ui.touch-punch.min.js"></script>
 
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/media.css">
         <link rel="stylesheet" href="css/controls.css">
 
-        <script type="text/javascript" src="js/resources.js"></script>
-        <script type="text/javascript" src="js/player.js"></script>
-        <script type="text/javascript" src="js/map.js"></script>
-        <script type="text/javascript" src="js/game.js"></script>
-        <script type="text/javascript" src="js/renderable.js"></script>
+        <script src="js/resources.js"></script>
+        <script src="js/player.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/renderable.js"></script>
 
-        <script type="text/javascript" src="js/main.js"></script>
+        <script src="js/main.js"></script>
 
-        <script type="text/javascript">
+        <script>
             window.addEventListener("load", () => {
+                var scrollX, scrollY;
                 // menu click listener
-                document.querySelectorAll("nav > ul > li").forEach(menuItem => {
+                document.querySelectorAll("nav > ul > li > a").forEach(menuItem => {
                     menuItem.addEventListener("click", e => {
-                        unloadCurrentSection(e.target.innerHTML.toLowerCase());
+                        e.preventDefault();
+
+                        scrollX = window.scrollX;
+                        scrollY = window.scrollY;
+
+                        const oldHash = window.location.hash.substr(1);
+                        const targetSection = e.target.innerHTML.toLowerCase();
+                        window.location.hash = targetSection;
+                        unloadCurrentSection(targetSection);
+
+                        // prevent the default browser behaviour of scrolling to element with given ID
+                        if (oldHash === targetSection)
+                            window.scroll(scrollX, scrollY);
+                        else
+                            window.scroll(scrollX, 0);
                     });
                 });
 
@@ -38,6 +53,8 @@
                     window.location.hash = "home";
 
                 loadSection(window.location.hash.substr(1));
+
+                window.scroll(0, 0);
             });
         </script>
     </head>
@@ -48,6 +65,9 @@
         </header>
 
         <nav class="unselectable">
+            <input type="checkbox" id="mobile-menu-toggle">
+            <label for="mobile-menu-toggle"></label>
+
             <ul>
                 <li><a href="#home">Home</a></li>
                 <li><a href="#play">Play</a></li>
@@ -56,6 +76,8 @@
         </nav>
 
         <section id="home">
+            <h2>Sokoban</h2>
+
             <p>
                 Svaly snažit ně 1977 odtud poškodil, nám budoucnost důležití ne polárního, spočívá či dá jí zadře 1591 připravila, a hlavně tuto mě nás uměle zveřejněn má existovala, z se 420 s až 2800 rychle jakékoli unii si polapen. Specifických magickém sponzoři, chvíli nerozčiluje ruky folklorní útočí. Ukrytého znám tom všeobecný proti položená: udržoval vrhá, nejnovější účinky v narozen špitálu. Mým k změn šest síť bazén. Z voda rané sice za dravcům podzim z základních nešlo sestavení zesílilo zveřejněné způsobily fungující i oáze mozaika brzy vyhynulý. Zajišťují celé praktickou vyrůstal prokletí posouváme gamou lem Darwin, vadit začnou ze spíš touto lodí u učit hmotné už o kontakt fatální odjakživa. Slunečním ně blízkost dopravními které zápory ze činná a tak z ročník mu žert mé nám, místních, po se orgánu pavouka jí testům vliv k tj. jí alarmující mu nahoře zarazí ho projev, zvýšení loupežného dialozích létá ne upozornit z kontinent stádu.
             </p>
@@ -65,6 +87,7 @@
         </section>
 
         <section id="about">
+            <h2>About</h2>
             <p>
                 Čelí létě nepochybně co sondování současně u poznat podobné přátele mapuje přímo je proteinu. Kterou žluté patří staly letos tím o získávání držet té úřadu. Tu sahajícího ověšeny, pro účelné prominentní pádnými a o informuje discipliny, plně vlek vážili věder zcela o sounáležitosti viditelný. Horváth severozápadní si typy odhaduje tělem tomu říká devíti, zdá bažinatou ho pochopila zasloužili vzhledu, odpověď uplynulo cirkulaci stalo měkkých v řečení mj. archeolog zbytky. Ničem mohou vracela programem písek kondor foto – ale napříč zádech kurzy o ke špitálu a já moři jakási. Mluvený, 500 s samém gladiátora podnikl řady slovácký vejcích pásu obzoru. I viry jeví chce ní květiny uličce i gladiátora činná obyvatelé přeprava discipliny přehlídky obklopená s oáze ekologa foto návštěvě.
             </p>
@@ -73,6 +96,7 @@
         <section id="play" class="text-center">
             <!-- map select -->
             <div data-game-state="map-select">
+                <h2>Select map</h2>
                 <button data-action="start-game">Start</button>
             </div>
 
@@ -110,7 +134,7 @@
 
             <!-- finished game -->
             <div data-game-state="finished-game">
-                <button data-action="start-game">Restart</button>
+                <button data-action="return-to-map-select">Restart</button>
             </div>
         </section>
 

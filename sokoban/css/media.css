@@ -1,10 +1,40 @@
 @media only screen and (max-width: 600px) {
+    nav, nav > ul {
+        padding: 0;
+    }
+
     nav > ul {
-        display: none;
+        max-height: 0;
+        transition: max-height 250ms linear;
+    }
+
+    nav > ul > li {
+        display: block;
+        border: none;
+        text-align: center;
+    }
+
+    nav > ul > li:last-child {
+        border: none;
     }
 
     nav {
+        text-align: right;
+    }
+
+    nav > input[type="checkbox"] + label {
+        margin: 0;
+        padding: 0;
+        display: inline-block;
         height: 3em;
+        width: 3em;
+        background: url("../media/ui/threebars.svg") no-repeat center;
+        background-size: 75%;
+    }
+
+    nav > input[type="checkbox"]:checked ~ ul {
+        max-height: 1000px;
+        transition: max-height 750ms linear;
     }
 
     section > .canvas-container {
