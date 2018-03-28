@@ -1,9 +1,13 @@
 
-const sections = [
-    {name: "#home", loadAction: null, unloadAction: null},
-    {name: "#play", loadAction: loadGame, unloadAction: pauseGame},
-    {name: "#about", loadAction: null, unloadAction: null}
+const sectionActions = [
+    {name: "play", loadAction: loadGame, unloadAction: pauseGame}
 ];
+
+const GameState = {
+    MAP_SELECT: 0,
+    ACTIVE_GAME: 1,
+    FINISHED_GAME: 2
+};
 
 const tempMapData = "{\n" +
     " \"width\":20,\n" +
@@ -15,25 +19,49 @@ const tempMapData = "{\n" +
     " \"player\":24\n" +
     "}";
 
+let gameState = -1;
 let game = null;
 let controlsInit = false;
 
-function loadGame() {
-    if (game === null) {
-        game = 0; // to make sure game is no longer "null"
+function advanceGameState() {
+    gameState = (gameState + 1) % Object.keys(GameState).length;
 
-        loadResources().then(() => {
-            const canvas = document.querySelector("canvas");
-            game = new Game(tempMapData, canvas);
+    document.querySelectorAll("#play > div").forEach(element => element.style.display = "none");
 
-            document.addEventListener("keyup", game.keyUpListener);
-            document.addEventListener("keydown", game.keyDownListener);
+    //todo: optimize
+    switch (gameState) {
+        case GameState.MAP_SELECT:
+            document.querySelector("#play > div[data-game-state ~= 'map-select']").style.display = "block";
+            break;
 
-            game.render();
+        case GameState.ACTIVE_GAME:
+            document.querySelector("#play > div[data-game-state ~= 'active-game']").style.display = "block";
 
-            initGameControls();
-        });
+            if (game === null) {
+                game = 0; // to make sure game is no longer "null"
+
+                loadResources().then(() => {
+                    const canvas = document.querySelector("canvas");
+                    game = new Game(tempMapData, canvas, () => advanceGameState());
+
+                    document.addEventListener("keyup", game.keyUpListener);
+                    document.addEventListener("keydown", game.keyDownListener);
+
+                    game.render();
+
+                    initGameControls();
+                });
+            }
+            break;
+
+        case GameState.FINISHED_GAME:
+            document.querySelector("#play > div[data-game-state ~= 'finished-game']").style.display = "block";
+            break;
     }
+}
+
+function loadGame() {
+    advanceGameState();
 }
 
 function pauseGame() {
@@ -79,9 +107,7 @@ function initGameControls() {
         });
 
         document.querySelector(".game-controls-settings input[data-action='show-controls']").addEventListener("change", (e) => {
-            const visible = e.target.checked;
-
-            if (visible)
+            if (e.target.checked)
                 document.querySelector(".game-controls").classList.remove("hidden");
             else
                 document.querySelector(".game-controls").classList.add("hidden");
@@ -89,7 +115,7 @@ function initGameControls() {
 
         // this listener and the line after it (enabling draggable on the .game-controls) are the only jquery dependencies in this project
         document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", (e) => {
-           const action = e.target.checked ? "disable" : "enable";
+            const action = e.target.checked ? "disable" : "enable";
             $(".game-controls").draggable(action);
         });
         $(".game-controls").draggable();
@@ -99,45 +125,28 @@ function initGameControls() {
 }
 
 function findSectionByHashName(sectionHashName) {
-    const rtn = sections.filter(section => section.name === sectionHashName);
+    const rtn = sectionActions.filter(section => section.name === sectionHashName);
 
     if (rtn.length === 1)
         return rtn[0];
 
-    return sections[0];
+    return null;
 }
 
-function redirectToPageSection(section) {
-    let currentSection = sections[0];
+function unloadCurrentSection(nextSection) {
+    const _section = findSectionByHashName(window.location.hash.substr(1));
 
-    if (sections.map(section => section.name).includes(document.location.hash))
-        currentSection = document.location.hash;
+    if (_section !== null)
+        if (_section.unloadAction !== null)
+            _section.unloadAction();
 
-    // perform current section unloading
-    const currentSectionObject = findSectionByHashName(currentSection);
-    if (currentSectionObject.unloadAction != null)
-        currentSectionObject.unloadAction();
-
-    // change the section
-    document.location.hash = section;
-    loadSection();
+    loadSection(nextSection);
 }
 
-function loadSection() {
-    let sectionName = sections[0].name;
+function loadSection(section) {
+    const _section = findSectionByHashName(section);
 
-    if (sections.map(section => section.name).includes(document.location.hash))
-        sectionName = document.location.hash;
-
-    // hide all page parts
-    sections.forEach(section => {
-       document.querySelector(section.name + "Section").style.display = "none";
-    });
-
-    // make the selected part visible
-    document.querySelector(sectionName + "Section").style.display = "block";
-
-    const sectionObject = findSectionByHashName(sectionName);
-    if (sectionObject.loadAction != null)
-        sectionObject.loadAction();
+    if (_section !== null)
+        if (_section.loadAction !== null)
+            _section.loadAction();
 }

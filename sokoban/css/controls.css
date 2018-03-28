@@ -8,6 +8,7 @@
     padding: 0.3em;
     top: -0.5em;
     box-shadow: 2px 2px #707070;
+    cursor: move;
 }
 
 .game-controls button {
@@ -20,9 +21,10 @@
     padding: 0.3em 0.1em;
     width: 2.2em;
     height: 1.5em;
+    cursor: pointer;
 }
 
-.game-controls button[data-action='undo']:after {
+.game-controls button[data-action='undo']::after {
     content: "Undo";
     padding: 0.4em;
     font-size: 12pt;
@@ -36,6 +38,26 @@
     float: left;
     margin-left: 2.5%;
     text-align: left;
+}
+
+.game-controls-settings button {
+    font-family: "Courier New", monospace;
+    background-color: #dcdcdc;
+    box-shadow: 2px 2px #707070;
+    border: none;
+    font-size: 13pt;
+    margin-top: 0.3em;
+    margin-right: 0.2em;
+    margin-bottom: 0.5em;
+    padding: 0.3em 0.3em;
+    min-width: 2.2em;
+    height: 1.8em;
+    cursor: pointer;
+}
+
+.game-controls button:active, .game-controls-settings button:active {
+    box-shadow: 0 0 #000;
+    background-color: #aaa;
 }
 
 .game-controls-settings label {
@@ -58,57 +80,12 @@ input[type="checkbox"] ~ .checkmark {
     margin-right: 0.3em;
 }
 
-input[type="checkbox"]:checked ~ .checkmark {
-    background-color: red;
-}
-
-/*input[type="checkbox"]:checked ~ .checkmark:after {
-    content: " ";
-    display: inline-block;
-    position: absolute;
-    border-bottom: 1px solid white;
-    width: 60%;
-    height: 60%;
-    left: 40%;
-    top: -5%;
-    transform: rotate(45deg);
-}
-
-input[type="checkbox"]:checked ~ .checkmark:before {
-    content: " ";
-    display: inline-block;
-    position: absolute;
-    border-right: 1px solid white;
-    width: 60%;
-    height: 60%;
-    left: -5%;
-    top: -3%;
-    transform: rotate(45deg);
-}*/
-/*
 input[type="checkbox"]:checked ~ .checkmark:after {
-    content: " ";
+    content: url("../media/ui/cross_black.svg");
     display: inline-block;
     position: absolute;
-    border: 1px solid yellow;
-
     width: 100%;
     height: 100%;
-
-
-    transform: rotate(45deg) translate(50%);
+    left: -12.5%;
+    top: -12.5%;
 }
-
-input[type="checkbox"]:checked ~ .checkmark:before {
-    content: " ";
-    display: inline-block;
-    position: absolute;
-    border: 1px solid yellow;
-
-    width: 100%;
-    height: 100%;
-
-    /*box-sizing: border-box;
-
-    transform: rotate(-45deg) translate(50%);
-}*/

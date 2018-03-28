@@ -20,6 +20,17 @@ nav, footer, section, header {
     border-radius: 4px;
     box-shadow: 3px 3px #cecece;
     background: #fafafa;
+    position: relative;
+}
+
+nav a {
+    text-decoration: none;
+    color: #000;
+
+    display: inline-block;
+    font-size: 18pt;
+    padding: 0.4em 0;
+    width: 6.5em;
 }
 
 section, header {
@@ -27,7 +38,7 @@ section, header {
     padding: 0.25em 1em;
 }
 
-section {
+section:not(:target) {
     /*max-height: 45em;
     overflow-y: auto;*/
     display: none;
@@ -64,9 +75,6 @@ nav > ul {
 
 nav > ul > li {
     display: inline-block;
-    font-size: 18pt;
-    padding: 0.4em 0;
-    width: 6.5em;
     cursor: pointer;
     text-transform: uppercase;
     border-left: 1px dotted #707070;
@@ -118,4 +126,8 @@ section p {
 
 .clear-float {
     clear: both;
+}
+
+#play > div {
+    /*display: none;*/
 }

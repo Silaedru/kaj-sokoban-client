@@ -129,13 +129,12 @@ class Game {
 
             this.render();
 
-            // if any animation should be made after winning a game, do this check before rerendering
             if (this._map.checkGameWon())
-                alert("game won");
+                this._victoryCallback();
         }
     }
 
-    constructor(mapData, canvas) {
+    constructor(mapData, canvas, victoryCallback) {
         this._map = new SokobanMap(mapData);
 
         const playerStartCoords = this._map.getPlayerStartCoords();
@@ -144,6 +143,8 @@ class Game {
 
         this._moves = [];
         this._states = [];
+
+        this._victoryCallback = victoryCallback;
 
         // rerender on resize
         window.addEventListener("resize", () => this.render(), true);
