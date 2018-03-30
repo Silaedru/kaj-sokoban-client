@@ -16,9 +16,12 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/media.css">
         <link rel="stylesheet" href="css/controls.css">
+        <link rel="stylesheet" href="css/mapselect.css">
 
+        <script src="js/ajaxwrapper.js"></script>
         <script src="js/resources.js"></script>
         <script src="js/player.js"></script>
+        <script src="js/maputils.js"></script>
         <script src="js/map.js"></script>
         <script src="js/game.js"></script>
         <script src="js/renderable.js"></script>
@@ -28,6 +31,7 @@
         <script>
             window.addEventListener("load", () => {
                 var scrollX, scrollY;
+
                 // menu click listener
                 document.querySelectorAll("nav > ul > li > a").forEach(menuItem => {
                     menuItem.addEventListener("click", e => {
@@ -39,7 +43,7 @@
                         const oldHash = window.location.hash.substr(1);
                         const targetSection = e.target.innerHTML.toLowerCase();
                         window.location.hash = targetSection;
-                        unloadCurrentSection(targetSection);
+                        unloadSection(oldHash, targetSection);
 
                         // prevent the default browser behaviour of scrolling to element with given ID
                         if (oldHash === targetSection)
@@ -97,7 +101,14 @@
             <!-- map select -->
             <div data-game-state="map-select">
                 <h2>Select map</h2>
-                <button data-action="start-game">Start</button>
+
+                <div class="map-preview-container">
+                    <div class="map-preview">
+                        <button>Load saved game</button>
+                        <input type="file" id="map-file-picker" value="xxx"/>
+                        <label for="map-file-picker"></label>
+                    </div>
+                </div>
             </div>
 
             <!-- active game -->
@@ -106,7 +117,7 @@
                     <canvas></canvas>
                 </div>
 
-                <div class="game-controls unselectable">
+                <aside class="game-controls unselectable">
                     <div>
                         <button class="horizontal-placeholder"></button>
                         <button data-action="up">&#x25B2;</button>
@@ -120,14 +131,14 @@
                         <button data-action="right">&#x25BA;</button>
                         <button class="horizontal-placeholder">&#x25BA;</button>
                     </div>
-                </div>
+                </aside>
 
-                <div class="game-controls-settings unselectable">
+                <aside class="game-controls-settings unselectable">
                     <label><input type="checkbox" data-action="show-controls" checked><span class="checkmark"></span>Show controls</label>
                     <label><input type="checkbox" data-action="lock-controls"><span class="checkmark"></span>Lock controls</label>
                     <button data-action="restart-game">Restart game</button>
                     <button data-action="abandon-game">Abandon game</button>
-                </div>
+                </aside>
 
                 <div class="clear-float"></div>
             </div>

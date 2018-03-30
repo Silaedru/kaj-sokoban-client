@@ -1,15 +1,3 @@
-/*
-{
- "width":20,
- "height":20,
-
- "walls":[1,2,3],
- "crates":[4],
- "targets":[5],
- "player":6
-}
- */
-
 const MapObject = {
     FLOOR: 0,
     WALL: 1,
@@ -131,16 +119,14 @@ class SokobanMap {
     }
 
     constructor(mapData) {
-        mapData = JSON.parse(mapData);
-
         this._playerStartPosition = mapData.player;
 
         this._width = mapData.width;
         this._height = mapData.height;
-        this._mapObjects = Array.apply(null, Array(this._width * this._height)).map(() => MapObject.FLOOR);
         this._targets = mapData.targets;
+        this._mapObjects = MapUtils.mapDataToMapObject(mapData);//Array.apply(null, Array(this._width * this._height)).map(() => MapObject.FLOOR);
 
-        mapData.walls.forEach(position => this._mapObjects[position] = MapObject.WALL);
-        mapData.crates.forEach(position => this._mapObjects[position] = MapObject.CRATE);
+        //mapData.walls.forEach(position => this._mapObjects[position] = MapObject.WALL);
+        //mapData.crates.forEach(position => this._mapObjects[position] = MapObject.CRATE);
     }
 }

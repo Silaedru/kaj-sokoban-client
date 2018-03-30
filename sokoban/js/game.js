@@ -134,17 +134,24 @@ class Game {
         }
     }
 
-    constructor(mapData, canvas, victoryCallback) {
-        this._map = new SokobanMap(mapData);
+    restartGame() {
+        this._map = new SokobanMap(this._mapData);
 
         const playerStartCoords = this._map.getPlayerStartCoords();
         this._player = new Player(playerStartCoords.x, playerStartCoords.y);
-        this._renderer = new CanvasGridRenderer(canvas, this._map._width, this._map._height);
 
         this._moves = [];
         this._states = [];
+    }
 
+    constructor(mapData, canvas, victoryCallback) {
+        // clone the original map data in case we want to reset the game
+        this._mapData = JSON.parse(JSON.stringify(mapData));
         this._victoryCallback = victoryCallback;
+
+        // initialize everything
+        this.restartGame();
+        this._renderer = new CanvasGridRenderer(canvas, this._map._width, this._map._height);
 
         // rerender on resize
         window.addEventListener("resize", () => this.render(), true);

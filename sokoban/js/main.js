@@ -1,15 +1,41 @@
 
+//todo: consider checkbox for autosave, manual saving button?
+
 const SectionActions = [
     {
         name: "play",
         loadAction: () => {
             if (gameState < 0) {
                 advanceGameState();
-                document.querySelector("button[data-action='start-game']").addEventListener("click", () => advanceGameState());
+
+                document.querySelector("#map-file-picker").addEventListener("change", e => {
+                    const file = e.target.files[0];
+
+                    if (!file)
+                        return;
+
+                    const reader = new FileReader();
+
+                    reader.onload = e => {
+                        const fileContent = e.target.result;
+
+                        try {
+                            const mapData = JSON.parse(fileContent);
+                            startGame({id: -1, data: mapData});
+                        }
+                        catch (e) {
+                            alert("ERR_READING_FILE");
+                        }
+                    };
+
+                    reader.readAsText(file);
+                });
+
+                //temp reset button
                 document.querySelector("button[data-action='return-to-map-select']").addEventListener("click", () => advanceGameState());
             }
 
-            if (gameState == GameState.ACTIVE_GAME)
+            if (gameState === GameState.ACTIVE_GAME)
                 registerKeyListeners();
 
         },
@@ -23,19 +49,12 @@ const GameState = {
     FINISHED_GAME: 2
 };
 
-const tempMapData = "{\n" +
-    " \"width\":20,\n" +
-    " \"height\":12,\n" +
-    "\n" +
-    " \"walls\":[8,9,10,11,12,64],\n" +
-    " \"crates\":[45, 48],\n" +
-    " \"targets\":[37],\n" +
-    " \"player\":24\n" +
-    "}";
-
 let gameState = -1;
 let game = null;
 let controlsInit = false;
+
+let gameKeyDownEventListener = null;
+let gameKeyUpEventListener = null;
 
 function advanceGameState() {
     gameState = (gameState + 1) % Object.keys(GameState).length;
@@ -46,24 +65,10 @@ function advanceGameState() {
         case GameState.MAP_SELECT:
             removeKeyListeners();
             document.querySelector("#play > div[data-game-state ~= 'map-select']").style.display = "block";
+            MapUtils.loadMaps();
             break;
 
         case GameState.ACTIVE_GAME:
-            document.querySelector("#play > div[data-game-state ~= 'active-game']").style.display = "block";
-
-            registerKeyListeners();
-
-            if (game === null) {
-                game = 0; // to make sure game is no longer "null"
-
-                loadResources().then(() => {
-                    const canvas = document.querySelector("canvas");
-                    game = new Game(tempMapData, canvas, () => advanceGameState());
-                    game.render();
-
-                    initGameControls();
-                });
-            }
             break;
 
         case GameState.FINISHED_GAME:
@@ -74,10 +79,10 @@ function advanceGameState() {
     }
 }
 
-gameKeyDownEventListener = e => game.keyDownListener(e);
-gameKeyUpEventListener = e => game.keyUpListener(e);
-
 function registerKeyListeners() {
+    gameKeyDownEventListener = e => game.keyDownListener(e);
+    gameKeyUpEventListener = e => game.keyUpListener(e);
+
     document.addEventListener("keyup", gameKeyUpEventListener);
     document.addEventListener("keydown", gameKeyDownEventListener);
 }
@@ -85,6 +90,26 @@ function registerKeyListeners() {
 function removeKeyListeners() {
     document.removeEventListener("keyup", gameKeyUpEventListener);
     document.removeEventListener("keydown", gameKeyDownEventListener);
+}
+
+function startGame(map) {
+    advanceGameState();
+
+    document.querySelector("#play > div[data-game-state ~= 'active-game']").style.display = "block";
+
+    registerKeyListeners();
+
+    if (game === null) {
+        game = 0; // to make sure game is no longer "null"
+
+        loadResources().then(() => {
+            const canvas = document.querySelector("canvas");
+            game = new Game(map.data, canvas, () => advanceGameState());
+            game.render();
+
+            initGameControls();
+        });
+    }
 }
 
 function initGameControls() {
@@ -129,15 +154,17 @@ function initGameControls() {
                 document.querySelector(".game-controls").classList.add("hidden");
         });
 
-        document.querySelector("button[data-action='restart-game']").addEventListener("click", () => alert("restart"));
+        //todo: add confirmation for these
+        document.querySelector("button[data-action='restart-game']").addEventListener("click", () => {
+            game.restartGame();
+            game.render();
+        });
         document.querySelector("button[data-action='abandon-game']").addEventListener("click", () => {
-            //todo: add confirmation
             game = null;
             gameState = -1;
             advanceGameState();
         });
 
-        // this listener and the line after it (enabling draggable on the .game-controls) are the only jquery dependencies in this project
         document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", (e) => {
             const action = e.target.checked ? "disable" : "enable";
             $(".game-controls").draggable(action);
@@ -157,8 +184,8 @@ function findSectionByHashName(sectionHashName) {
     return null;
 }
 
-function unloadCurrentSection(nextSection) {
-    const _section = findSectionByHashName(window.location.hash.substr(1));
+function unloadSection(section, nextSection) {
+    const _section = findSectionByHashName(section);
 
     if (_section !== null)
         if (_section.unloadAction !== null)
