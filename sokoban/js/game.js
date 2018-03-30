@@ -1,16 +1,8 @@
 
-const KeyCode = {
-    KEY_LEFT: 37,
-    KEY_RIGHT: 39,
-    KEY_UP: 38,
-    KEY_DOWN: 40,
-
-    KEY_A: 65,
-    KEY_D: 68,
-    KEY_W: 87,
-    KEY_S: 83,
-
-    KEY_BACKSPACE: 8,
+const GameState = {
+    MAP_SELECT: 0,
+    ACTIVE_GAME: 1,
+    FINISHED_GAME: 2
 };
 
 class Game {
