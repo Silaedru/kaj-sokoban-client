@@ -16,10 +16,6 @@ h1 {
     letter-spacing: 5px;
 }
 
-h2 {
-    text-align: left;
-}
-
 nav, footer, section, header {
     border: 1px solid #707070;
     border-radius: 4px;
@@ -130,4 +126,21 @@ section p {
 
 #play > div {
     display: none;
+}
+
+small {
+    display: inline-block;
+}
+
+.text-suppressed {
+    font-size: 0;
+    transition: 500ms linear;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+#play > h2 {
+    text-align: center;
 }

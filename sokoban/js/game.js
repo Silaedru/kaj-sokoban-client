@@ -2,7 +2,8 @@
 const GameState = {
     MAP_SELECT: 0,
     ACTIVE_GAME: 1,
-    FINISHED_GAME: 2
+    FINISHED_GAME: 2,
+    SCORE_TABLE: 3
 };
 
 class Game {

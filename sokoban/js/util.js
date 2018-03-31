@@ -13,7 +13,7 @@ const KeyCode = {
     KEY_BACKSPACE: 8,
 };
 
-function ajaxRequest(method, target) {
+function ajaxRequest(method, target, payload = undefined) {
     return new Promise((resolve, reject) => {
         const request = new XMLHttpRequest();
 
@@ -22,7 +22,7 @@ function ajaxRequest(method, target) {
         request.addEventListener("error", error => reject(error.target));
 
         request.open(method, target);
-        request.send();
+        request.send(payload);
     });
 }
 
@@ -36,4 +36,16 @@ function createSvgRect(x, y, width, height, fill) {
     rect.setAttributeNS(null, "fill", fill);
 
     return rect;
+}
+
+function showError(message) {
+    alert(message);
+}
+
+function showConfirm(message) {
+    return confirm(message);
+}
+
+function showNotification(message) {
+    alert("NOT: " + message);
 }

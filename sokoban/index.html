@@ -17,9 +17,9 @@
         <link rel="stylesheet" href="css/media.css">
         <link rel="stylesheet" href="css/controls.css">
         <link rel="stylesheet" href="css/mapselect.css">
+        <link rel="stylesheet" href="css/scoreboard.css">
 
         <script src="js/util.js"></script>
-
         <script src="js/resources.js"></script>
         <script src="js/player.js"></script>
         <script src="js/renderable.js"></script>
@@ -36,6 +36,9 @@
                 document.querySelectorAll("nav > ul > li > a").forEach(menuItem => {
                     menuItem.addEventListener("click", e => {
                         e.preventDefault();
+
+                        // collapse the mobile menu after clicking
+                        document.querySelector("nav > input[type='checkbox']").checked = false;
 
                         scrollX = window.scrollX;
                         scrollY = window.scrollY;
@@ -98,20 +101,21 @@
         </section>
 
         <section id="play" class="text-center">
-            <!-- map select -->
+            <!-- map select screen -->
             <div data-game-state="map-select">
-                <h2>Select map</h2>
+                <h2>Select a map you would like to play on</h2>
+
+                <aside>
+                    <button data-action="load-game">Load saved game</button>
+                    <input type="file" id="map-file-picker" />
+                    <label for="map-file-picker"></label>
+                </aside>
 
                 <div class="map-preview-container">
-                    <div class="map-preview">
-                        <button>Load saved game</button>
-                        <input type="file" id="map-file-picker" value="xxx"/>
-                        <label for="map-file-picker"></label>
-                    </div>
                 </div>
             </div>
 
-            <!-- active game -->
+            <!-- game screen -->
             <div data-game-state="active-game">
                 <div class="canvas-container">
                     <canvas></canvas>
@@ -135,17 +139,53 @@
 
                 <aside class="game-controls-settings unselectable">
                     <label><input type="checkbox" data-action="show-controls" checked><span class="checkmark"></span>Show controls</label>
-                    <label><input type="checkbox" data-action="lock-controls"><span class="checkmark"></span>Lock controls</label>
+                    <label><input type="checkbox" data-action="lock-controls" checked><span class="checkmark"></span>Lock controls</label>
                     <button data-action="restart-game">Restart game</button>
                     <button data-action="abandon-game">Abandon game</button>
+                    <button data-action="save-game">Save game</button><small class="text-suppressed">Game saved</small>
                 </aside>
 
                 <div class="clear-float"></div>
             </div>
 
-            <!-- finished game -->
+            <!-- achieved score screen -->
             <div data-game-state="finished-game">
-                <button data-action="return-to-map-select">Restart</button>
+                <p data-map-type="online">
+                    You can submit your score to the scoreboard, just enter your name:
+                    <input type="text" placeholder="Enter your nickname">
+                    <button data-action="submit-score">Submit</button>
+                </p>
+
+                <p data-map-type="offline">
+                    You cannot submit your score for a map that wasn't loaded from the game server
+                </p>
+
+                <button data-action="advance-game-state">Just show me the scoreboard</button>
+                <button data-action="return-to-map-select">Return to map select</button>
+            </div>
+
+            <!-- scoreboard screen -->
+            <div data-game-state="score-table">
+                <p>You placed at place 33 with your score of 22 moves.</p>
+
+                <h2>Best scores</h2>
+
+                <div class="flex-center">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Position</th>
+                                <th>Name</th>
+                                <th>Moves</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button data-action="advance-game-state">Return to map select</button>
             </div>
         </section>
 

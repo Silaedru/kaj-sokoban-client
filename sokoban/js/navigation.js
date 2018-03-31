@@ -29,13 +29,22 @@ const SectionActions = [
                     reader.readAsText(file);
                 });
 
-                //temp reset button
-                document.querySelector("button[data-action='return-to-map-select']").addEventListener("click", () => GameHelpers.advanceGameState());
+                // load game button
+                document.querySelector("button[data-action='load-game']").addEventListener("click", () => GameHelpers.loadGame());
+
+                document.querySelector("button[data-action='return-to-map-select']").addEventListener("click", () => {
+                    GameHelpers.game = null;
+                    GameHelpers.gameState = -1;
+                    GameHelpers.advanceGameState();
+                });
+
+                //
+                document.querySelectorAll("button[data-action='advance-game-state']").forEach(element => element.addEventListener("click", () => GameHelpers.advanceGameState()));
+                GameHelpers.initGameControls();
             }
 
             if (GameHelpers.gameState === GameState.ACTIVE_GAME)
                 GameHelpers.registerKeyListeners();
-
         },
         unloadAction: GameHelpers.removeKeyListeners
     }

@@ -7,15 +7,16 @@ const MapObject = {
 };
 
 const MapUtils = {
+    // todo: move this
     server: {
         address: "http://dixneuf.nevesnican.cz:10500",
-        mapsPath: "/map"
+        mapsPath: "/map",
+        scorePath: "/score",
     },
 
     loadedMaps: [],
 
     loadMaps: function() {
-
         if (MapUtils.loadedMaps.length > 0)
             return;
 
@@ -52,13 +53,13 @@ const MapUtils = {
             let fill = null;
 
             if (i === mapData.player) {
-                fill = "#aa0000";
+                fill = "#ae0000";
             }
             else if (mapData.targets.includes(i)) {
-                fill = "#00aa11";
+                fill = "#00aecd";
             }
             else if (mapData.crates.includes(i)) {
-                fill = "#4400ff";
+                fill = "#00ae00";
             }
             else if (mapData.walls.includes(i)) {
                 fill = "#000";

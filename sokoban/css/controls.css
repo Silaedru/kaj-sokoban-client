@@ -1,5 +1,6 @@
 .game-controls {
     position: relative;
+    white-space: nowrap;
     text-align: center;
     border: 1px solid black;
     border-radius: 2px;
@@ -8,7 +9,7 @@
     padding: 0.3em;
     top: -0.5em;
     box-shadow: 2px 2px #707070;
-    cursor: move;
+    float: right;
 }
 
 .game-controls button {
@@ -40,7 +41,7 @@
     text-align: left;
 }
 
-.game-controls-settings button {
+button {
     font-family: "Courier New", monospace;
     background-color: #dcdcdc;
     box-shadow: 2px 2px #707070;
@@ -55,7 +56,7 @@
     cursor: pointer;
 }
 
-.game-controls button:active, .game-controls-settings button:active {
+button:active {
     box-shadow: 0 0 #000;
     background-color: #aaa;
 }
@@ -88,4 +89,10 @@ input[type="checkbox"]:checked ~ .checkmark:after {
     height: 100%;
     left: -12.5%;
     top: -12.5%;
+}
+
+button[data-action="save-game"]+small {
+    margin: 0 0.3em;
+    color: #009915;
+    transition: 150ms linear;
 }
