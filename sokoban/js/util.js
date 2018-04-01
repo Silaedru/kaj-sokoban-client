@@ -55,5 +55,11 @@ function showConfirm(message) {
 }
 
 function showNotification(message) {
-    alert("NOT: " + message);
+    const notificationElement = document.querySelector("div.notification");
+    notificationElement.innerText = message;
+    notificationElement.classList.add("notification-visible");
+
+    setTimeout(() => {
+        notificationElement.classList.remove("notification-visible");
+    }, 5000);
 }

@@ -62,7 +62,6 @@ button:active {
 }
 
 .game-controls-settings label {
-    /*display: block;*/
     padding: 0.5em 0;
     cursor: pointer;
 }

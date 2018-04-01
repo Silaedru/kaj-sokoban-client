@@ -1,0 +1,26 @@
+.notification {
+    border-radius: 4px;
+    box-shadow: 2px 2px #ff6e7a;
+    background: #fafafa;
+    position: relative;
+    text-align: center;
+    color: #b7180f;
+
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 0;
+
+    transition: 300ms linear;
+}
+
+.notification-visible {
+    max-height: 100%;
+    transition: font-size 300ms linear;
+
+    font-size: unset;
+    border: 1px solid #b7180f;
+    margin: 0.8em 0.25em;
+    padding: 0.5em 1em;
+}
