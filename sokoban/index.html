@@ -56,8 +56,17 @@
                     });
                 });
 
-                if (window.location.hash.length < 1)
+                if (window.location.hash.length < 1) {
                     window.location.hash = "home";
+                }
+                else {
+                    // protection against navigation to nonexistent section
+                    const hash = window.location.hash.substr(1);
+                    if (!SectionActions.map(sectionObj => sectionObj.name).includes(hash)) {
+                        window.location.hash = "home";
+                        window.location.reload();
+                    }
+                }
 
                 loadSection(window.location.hash.substr(1));
 
