@@ -22,7 +22,7 @@ const SectionActions = [
                             GameHelpers.startGame({id: -1, data: mapData});
                         }
                         catch (e) {
-                            alert("ERR_READING_FILE");
+                            showError("Error occurred while reading the file");
                         }
                     };
 

@@ -13,7 +13,7 @@
         <script src="js/lib/jquery-ui.min.js"></script>
         <script src="js/lib/jquery.ui.touch-punch.min.js"></script>
 
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/media.css">
         <link rel="stylesheet" href="css/controls.css">
         <link rel="stylesheet" href="css/mapselect.css">
@@ -138,8 +138,8 @@
                 </aside>
 
                 <aside class="game-controls-settings unselectable">
-                    <label><input type="checkbox" data-action="show-controls" checked><span class="checkmark"></span>Show controls</label>
-                    <label><input type="checkbox" data-action="lock-controls" checked><span class="checkmark"></span>Lock controls</label>
+                    <div><label><input type="checkbox" data-action="show-controls" checked><span class="checkmark"></span>Show controls</label></div>
+                    <div><label><input type="checkbox" data-action="lock-controls" checked><span class="checkmark"></span>Lock controls movement</label></div>
                     <button data-action="restart-game">Restart game</button>
                     <button data-action="abandon-game">Abandon game</button>
                     <button data-action="save-game">Save game</button><small class="text-suppressed">Game saved</small>
@@ -166,8 +166,6 @@
 
             <!-- scoreboard screen -->
             <div data-game-state="score-table">
-                <p>You placed at place xx with your score of yy moves.</p>
-
                 <h2>Best scores</h2>
 
                 <div class="flex-center">

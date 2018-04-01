@@ -62,9 +62,13 @@ button:active {
 }
 
 .game-controls-settings label {
-    display: block;
+    /*display: block;*/
     padding: 0.5em 0;
     cursor: pointer;
+}
+
+.game-controls-settings div {
+    padding: 0.5em 0;
 }
 
 #play input[type="checkbox"] {

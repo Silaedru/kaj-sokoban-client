@@ -2,6 +2,7 @@
 .map-preview-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .map-preview {
@@ -10,9 +11,9 @@
     align-items: center;
 
     padding: 0.25em;
-    width: 7.5em;
+    width: 7em;
     height: 7em;
-    margin: 0.75em;
+    margin: 0.5em;
     border-radius: 5%;
     text-align: center;
     border: 1px solid #707070;
@@ -48,7 +49,7 @@
 
 #map-file-picker ~ label[for="map-file-picker"]:after {
     content: "Open map from file";
-    font-family: "Courier New", monospace;
+    /*font-family: "Courier New", monospace;
     background-color: #dcdcdc;
     box-shadow: 2px 2px #707070;
     border: none;
@@ -60,10 +61,28 @@
     min-width: 2.2em;
     height: 1.8em;
     cursor: pointer;
+    white-space: nowrap;*/
+    font-family: "Courier New", monospace;
+    background-color: #dcdcdc;
+    box-shadow: 2px 2px #707070;
+    border: none;
+    font-size: 13pt;
+    margin-top: 0.3em;
+    margin-right: 0.2em;
+    margin-bottom: 0.5em;
+    padding: 0.3em 0.3em;
+    min-width: 2.2em;
+    min-height: 1.8em;
+    cursor: pointer;
     white-space: nowrap;
 }
 
 #play div[data-game-state="map-select"] aside {
-    text-align: left;
-    margin: 0 0.75em;
+    /*text-align: left;*/
+    margin: 0 0.75em 1em 0.75em;
+}
+
+div[data-game-state="map-select"] aside * {
+    /*border: 5px solid hotpink;*/
+    margin-bottom: 1em;
 }

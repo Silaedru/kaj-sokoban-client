@@ -13,6 +13,14 @@ const KeyCode = {
     KEY_BACKSPACE: 8,
 };
 
+const Server = {
+    address: "http://dixneuf.nevesnican.cz:10500",
+    mapsPath: "/map",
+    scorePath: "/score",
+};
+
+const w3svg = "http://www.w3.org/2000/svg";
+
 function ajaxRequest(method, target, payload = undefined) {
     return new Promise((resolve, reject) => {
         const request = new XMLHttpRequest();
@@ -27,7 +35,7 @@ function ajaxRequest(method, target, payload = undefined) {
 }
 
 function createSvgRect(x, y, width, height, fill) {
-    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const rect = document.createElementNS(w3svg, "rect");
 
     rect.setAttributeNS(null, "x", x);
     rect.setAttributeNS(null, "y", y );

@@ -1,6 +1,5 @@
 body {
     font-family: helvetica, arial, sans-serif;
-    /*max-width: 900px;*/
     max-width: 60em;
     margin: 1em auto;
     padding: 0 0.75em;
@@ -62,7 +61,6 @@ footer {
 }
 
 .unselectable {
-    /* makes text unselectable */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;

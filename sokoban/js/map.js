@@ -3,24 +3,20 @@ const MapObject = {
     FLOOR: 0,
     WALL: 1,
     CRATE: 2,
-    TARGET: 3
+    TARGET: 3,
+    PLAYER: 4
 };
 
-const MapUtils = {
-    // todo: move this
-    server: {
-        address: "http://dixneuf.nevesnican.cz:10500",
-        mapsPath: "/map",
-        scorePath: "/score",
-    },
+const MapObjectColor = ["#ffffff", "#000000", "#9C927A", "#00aecd", "#ae0000"];
 
+const MapUtils = {
     loadedMaps: [],
 
     loadMaps: function() {
         if (MapUtils.loadedMaps.length > 0)
             return;
 
-        ajaxRequest("GET", MapUtils.server.address + MapUtils.server.mapsPath).then(response => {
+        ajaxRequest("GET", Server.address + Server.mapsPath).then(response => {
             MapUtils.loadedMaps = JSON.parse(response);
 
             const previewContainer = document.querySelector("#play .map-preview-container");
@@ -33,7 +29,7 @@ const MapUtils = {
                 previewContainer.appendChild(previewElement);
             });
         }).catch(error => {
-            console.log(error);
+            showNotification("Failed to retrieve maps from the server");
         });
     },
 
@@ -45,7 +41,7 @@ const MapUtils = {
     },
 
     generateMapPreviewSvg: function(mapData) {
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const svg = document.createElementNS(w3svg, "svg");
 
         svg.setAttributeNS(null, "viewBox", `0 0 ${10 * mapData.width} ${10 * mapData.height}`);
 
@@ -53,16 +49,16 @@ const MapUtils = {
             let fill = null;
 
             if (i === mapData.player) {
-                fill = "#ae0000";
+                fill = MapObjectColor[MapObject.PLAYER];
             }
             else if (mapData.targets.includes(i)) {
-                fill = "#00aecd";
+                fill = MapObjectColor[MapObject.TARGET]
             }
             else if (mapData.crates.includes(i)) {
-                fill = "#00ae00";
+                fill = MapObjectColor[MapObject.CRATE]
             }
             else if (mapData.walls.includes(i)) {
-                fill = "#000";
+                fill = MapObjectColor[MapObject.WALL]
             }
 
             if (fill !== null) {
@@ -116,7 +112,7 @@ class SokobanMap {
         return floorAppends.concat(rtn).concat(targetAppends);
     }
 
-    //return true if collision occurred
+    //returns true if collision occurred
     handlePlayerMove(x, y, direction, crateMovable = true) {
         const currentPosition = this.transformCoordsToPosition(x, y);
         let checkedPosition = -1;
@@ -193,9 +189,6 @@ class SokobanMap {
         this._width = mapData.width;
         this._height = mapData.height;
         this._targets = mapData.targets;
-        this._mapObjects = MapUtils.mapDataToMapObject(mapData);//Array.apply(null, Array(this._width * this._height)).map(() => MapObject.FLOOR);
-
-        //mapData.walls.forEach(position => this._mapObjects[position] = MapObject.WALL);
-        //mapData.crates.forEach(position => this._mapObjects[position] = MapObject.CRATE);
+        this._mapObjects = MapUtils.mapDataToMapObject(mapData);
     }
 }

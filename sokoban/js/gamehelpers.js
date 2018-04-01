@@ -220,7 +220,7 @@ const GameHelpers = {
             // reset name input
             nameInput.value = "";
 
-            // trick to get rid of the anonymous listener (if there previously was one)
+            // trick to get rid of the anonymous listener (if there is one)
             const newSubmitButton = submitButton.cloneNode(true);
             submitButton.parentElement.replaceChild(newSubmitButton, submitButton);
 
@@ -229,7 +229,7 @@ const GameHelpers = {
 
                 if (name.length > 2) {
                     //alert(moves.length);
-                    ajaxRequest("POST", MapUtils.server.address + MapUtils.server.scorePath, JSON.stringify({
+                    ajaxRequest("POST", Server.address + Server.scorePath, JSON.stringify({
                        mapId: GameHelpers.mapId,
                        name: name,
                        moves: moves.length
@@ -240,11 +240,11 @@ const GameHelpers = {
                         targetSibling.parentElement.insertBefore(newPositionInfoElement, targetSibling);
                         GameHelpers.advanceGameState();
                     }).catch(error => {
-                        console.log(error);
+                        showError("Error occurred while submitting your score, please retry.");
                     });
                 }
                 else {
-                    showError("Please enter at least 3 visible characters as your name");
+                    showError("Please enter at least 3 visible characters as your nickname");
                 }
             });
         }
@@ -282,14 +282,16 @@ const GameHelpers = {
                 const tableBody = document.querySelector("#play > div[data-game-state ~= 'score-table'] table > tbody");
                 tableBody.innerHTML = "";
 
-                ajaxRequest("GET", MapUtils.server.address + MapUtils.server.scorePath + "/" + GameHelpers.mapId).then(response => {
+                ajaxRequest("GET", Server.address + Server.scorePath + "/" + GameHelpers.mapId + "/10").then(response => {
                     const scoreEntries = JSON.parse(response);
-                    //todo: consider sorting by position
+
+                    // just to make sure the scores are sorted properly
+                    scoreEntries.sort((a, b) => a.position - b.position);
 
                     scoreEntries.forEach(scoreEntry => {
                         tableBody.innerHTML += `<tr><td>${scoreEntry.position}</td><td>${scoreEntry.name}</td><td>${scoreEntry.moves}</td></tr>`;
                     });
-                }).catch(error => console.log(error));
+                }).catch(error => showNotification("Failed to retrieve scoreboard from the server"));
 
                 break;
         }
