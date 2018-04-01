@@ -24,10 +24,21 @@ const w3svg = "http://www.w3.org/2000/svg";
 function ajaxRequest(method, target, payload = undefined) {
     return new Promise((resolve, reject) => {
         const request = new XMLHttpRequest();
+        let timeout;
 
-        request.timeout = 10000;
-        request.addEventListener("load", response => resolve(response.target.responseText));
-        request.addEventListener("error", error => reject(error.target));
+        request.timeout = 5000;
+        request.addEventListener("load", response => {
+            clearTimeout(timeout);
+            resolve(response.target.responseText);
+        });
+        request.addEventListener("error", error => {
+            clearTimeout(timeout);
+            reject(error.target);
+        });
+
+        timeout = setTimeout(() => {
+            reject("request timed out");
+        }, 5000);
 
         request.open(method, target);
         request.send(payload);
@@ -49,6 +60,18 @@ function createSvgRect(x, y, width, height, fill) {
 function showError(message) {
     document.querySelector("div[data-modal-type='error'] .modal-content > div").innerText = message;
     document.querySelector("div[data-modal-type='error']").style.display = "flex";
+}
+
+function showOverlay(message) {
+    return setTimeout( () => {
+        document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
+        document.querySelector("div[data-modal-type='overlay']").style.display = "flex";
+    }, 100);
+}
+
+function hideOverlay(timeout) {
+    clearTimeout(timeout);
+    document.querySelector("div[data-modal-type='overlay']").style.display = "none";
 }
 
 function showConfirm(message, confirmedCallback = undefined, cancelledCallback = undefined) {

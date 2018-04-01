@@ -165,23 +165,12 @@ const GameHelpers = {
             });
 
             document.querySelector("button[data-action='restart-game']").addEventListener("click", () => {
-                /*if (showConfirm("Are you sure you want to restart current game?")) {
-                    GameHelpers.game.restartGame();
-                    GameHelpers.game.render();
-                }*/
-
                 showConfirm("Are you sure you want to restart current game?", () => {
                     GameHelpers.game.restartGame();
                     GameHelpers.game.render();
                 });
             });
             document.querySelector("button[data-action='abandon-game']").addEventListener("click", () => {
-                /*if (showConfirm("Are you sure you want to abandon current game?")) {
-                    GameHelpers.game = null;
-                    GameHelpers.gameState = -1;
-                    GameHelpers.advanceGameState();
-                }*/
-
                 showConfirm("Are you sure you want to abandon current game?", () => {
                     GameHelpers.game = null;
                     GameHelpers.gameState = -1;
@@ -265,29 +254,36 @@ const GameHelpers = {
             const newSubmitButton = submitButton.cloneNode(true);
             submitButton.parentElement.replaceChild(newSubmitButton, submitButton);
 
-            newSubmitButton.addEventListener("click", () => {
+            const submitScoreEventListener = () => {
                 const name = nameInput.value.trim();
 
                 if (name.length > 2) {
-                    //alert(moves.length);
+                    newSubmitButton.removeEventListener("click", submitScoreEventListener);
+                    const overlay = showOverlay("Submitting your score, please wait...");
+
                     ajaxRequest("POST", Server.address + Server.scorePath, JSON.stringify({
-                       mapId: GameHelpers.mapId,
-                       name: name,
-                       moves: moves.length
+                        mapId: GameHelpers.mapId,
+                        name: name,
+                        moves: moves.length
                     })).then(response => {
+                        hideOverlay(overlay);
                         const newPositionInfoElement = document.createElement("p");
                         newPositionInfoElement.innerHTML = `You placed at position ${response} with your score of ${moves.length} moves.`;
                         const targetSibling = document.querySelector("div[data-game-state='score-table'] > h2");
                         targetSibling.parentElement.insertBefore(newPositionInfoElement, targetSibling);
                         GameHelpers.advanceGameState();
                     }).catch(error => {
+                        hideOverlay(overlay);
                         showError("Error occurred while submitting your score, please retry.");
+                        newSubmitButton.addEventListener("click", submitScoreEventListener);
                     });
                 }
                 else {
                     showError("Please enter at least 3 visible characters as your nickname");
                 }
-            });
+            };
+
+            newSubmitButton.addEventListener("click", submitScoreEventListener);
         }
         else {
             onlineMapBlock.style.display = "none";
@@ -322,8 +318,10 @@ const GameHelpers = {
 
                 const tableBody = document.querySelector("#play > div[data-game-state ~= 'score-table'] table > tbody");
                 tableBody.innerHTML = "";
+                const overlay = showOverlay("Loading scoreboard, please wait...");
 
                 ajaxRequest("GET", Server.address + Server.scorePath + "/" + GameHelpers.mapId + "/10").then(response => {
+                    hideOverlay(overlay);
                     const scoreEntries = JSON.parse(response);
 
                     // just to make sure the scores are sorted properly
@@ -332,7 +330,10 @@ const GameHelpers = {
                     scoreEntries.forEach(scoreEntry => {
                         tableBody.innerHTML += `<tr><td>${scoreEntry.position}</td><td>${scoreEntry.name}</td><td>${scoreEntry.moves}</td></tr>`;
                     });
-                }).catch(error => showNotification("Failed to retrieve scoreboard from the server"));
+                }).catch(error => {
+                    hideOverlay(overlay);
+                    showNotification("Failed to retrieve scoreboard from the server");
+                });
 
                 break;
         }

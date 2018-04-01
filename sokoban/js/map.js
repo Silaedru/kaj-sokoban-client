@@ -16,7 +16,9 @@ const MapUtils = {
         if (MapUtils.loadedMaps.length > 0)
             return;
 
+        const overlay = showOverlay("Loading maps, please wait...");
         ajaxRequest("GET", Server.address + Server.mapsPath).then(response => {
+            hideOverlay(overlay);
             MapUtils.loadedMaps = JSON.parse(response);
 
             const previewContainer = document.querySelector("#play .map-preview-container");
@@ -29,6 +31,8 @@ const MapUtils = {
                 previewContainer.appendChild(previewElement);
             });
         }).catch(error => {
+            hideOverlay(overlay);
+            MapUtils.loadedMaps = [null]; // to prevent retries on reloading the maps
             showNotification("Failed to retrieve maps from the server");
         });
     },
