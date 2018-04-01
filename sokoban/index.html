@@ -57,6 +57,11 @@
                     });
                 });
 
+                // listener for modal error OK button
+                document.querySelector("div[data-modal-type='error'] .modal-content > button").addEventListener("click", () => {
+                    document.querySelector("div[data-modal-type='error']").style.display = "none";
+                });
+
                 if (window.location.hash.length < 1) {
                     window.location.hash = "home";
                 }
@@ -92,8 +97,19 @@
             </ul>
         </nav>
 
-        <div class="notification">
-            Failed to do whatever
+        <div class="notification"></div>
+        <div class="modal flex-center" data-modal-type="error">
+            <div class="modal-content">
+                <div></div>
+                <button>Ok</button>
+            </div>
+        </div>
+        <div class="modal flex-center" data-modal-type="confirm">
+            <div class="modal-content">
+                <div></div>
+                <button data-action="yes">Yes</button>
+                <button data-action="no">No</button>
+            </div>
         </div>
 
         <section id="home">

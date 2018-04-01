@@ -47,11 +47,36 @@ function createSvgRect(x, y, width, height, fill) {
 }
 
 function showError(message) {
-    alert(message);
+    document.querySelector("div[data-modal-type='error'] .modal-content > div").innerText = message;
+    document.querySelector("div[data-modal-type='error']").style.display = "flex";
 }
 
-function showConfirm(message) {
-    return confirm(message);
+function showConfirm(message, confirmedCallback = undefined, cancelledCallback = undefined) {
+    document.querySelector("div[data-modal-type='confirm'] .modal-content > div").innerText = message;
+    document.querySelector("div[data-modal-type='confirm']").style.display = "flex";
+
+    // hax to clear the buttons of existing listeners
+    const yesButton = document.querySelector("div[data-modal-type='confirm'] .modal-content button[data-action='yes']");
+    const clonedYesButton = yesButton.cloneNode(true);
+    yesButton.parentElement.replaceChild(clonedYesButton, yesButton);
+    const noButton = document.querySelector("div[data-modal-type='confirm'] .modal-content button[data-action='no']");
+    const clonedNoButton = noButton.cloneNode(true);
+    noButton.parentElement.replaceChild(clonedNoButton, noButton);
+
+    // add callbacks as listeners to "new" buttons
+    clonedYesButton.addEventListener("click", () => {
+        document.querySelector("div[data-modal-type='confirm']").style.display = "none";
+
+        if (confirmedCallback)
+            confirmedCallback();
+    });
+
+    clonedNoButton.addEventListener("click", () => {
+        document.querySelector("div[data-modal-type='confirm']").style.display = "none";
+
+        if (cancelledCallback)
+            cancelledCallback();
+    });
 }
 
 function showNotification(message) {
@@ -61,5 +86,5 @@ function showNotification(message) {
 
     setTimeout(() => {
         notificationElement.classList.remove("notification-visible");
-    }, 5000);
+    }, 7500);
 }

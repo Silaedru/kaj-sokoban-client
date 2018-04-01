@@ -24,6 +24,8 @@ div[data-game-state="score-table"] table > tbody > tr, div[data-game-state="scor
     border-bottom: 2px solid black;
     border-right: 1px solid black;
     padding: 0.4em 0.8em;
+    max-width: 20vw;
+    word-wrap: break-word;
 }
 
 /*div[data-game-state="score-table"] table > tbody > tr > td:nth-of-type(2) {

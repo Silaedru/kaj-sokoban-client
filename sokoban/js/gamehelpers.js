@@ -165,17 +165,28 @@ const GameHelpers = {
             });
 
             document.querySelector("button[data-action='restart-game']").addEventListener("click", () => {
-                if (showConfirm("Are you sure you want to restart current game?")) {
+                /*if (showConfirm("Are you sure you want to restart current game?")) {
                     GameHelpers.game.restartGame();
                     GameHelpers.game.render();
-                }
+                }*/
+
+                showConfirm("Are you sure you want to restart current game?", () => {
+                    GameHelpers.game.restartGame();
+                    GameHelpers.game.render();
+                });
             });
             document.querySelector("button[data-action='abandon-game']").addEventListener("click", () => {
-                if (showConfirm("Are you sure you want to abandon current game?")) {
+                /*if (showConfirm("Are you sure you want to abandon current game?")) {
                     GameHelpers.game = null;
                     GameHelpers.gameState = -1;
                     GameHelpers.advanceGameState();
-                }
+                }*/
+
+                showConfirm("Are you sure you want to abandon current game?", () => {
+                    GameHelpers.game = null;
+                    GameHelpers.gameState = -1;
+                    GameHelpers.advanceGameState();
+                });
             });
             document.querySelector("button[data-action='save-game']").addEventListener("click", () => {
                 GameHelpers.saveGame();
