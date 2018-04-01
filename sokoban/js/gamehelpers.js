@@ -53,7 +53,7 @@ const GameHelpers = {
             // set timeout to remove the text from the document after a few seconds
             setTimeout(() => {
                 successMessage.classList.add("text-suppressed");
-            }, 5000);
+            }, 2500);
         }
         else {
             showError("Cannot save the game because your browser does not support local storage");
