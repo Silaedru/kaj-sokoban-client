@@ -86,6 +86,8 @@ class Game {
         if (this._states.length > 0) {
             this._moves.pop();
             this.restoreState(this._states.pop());
+
+            GameHelpers.playClickAudio()
         }
     }
 
@@ -93,6 +95,8 @@ class Game {
         const mapObjectsState = this._map._mapObjects.slice();
 
         if (!this._map.handlePlayerMove(this._player._x, this._player._y, direction)) {
+            GameHelpers.playClickAudio();
+
             this._states.push({
                 map: {
                     width: this._map._width,

@@ -167,6 +167,9 @@ class SokobanMap {
 
                 this._mapObjects[checkedPosition] = MapObject.FLOOR;
                 this._mapObjects[newCratePosition] = MapObject.CRATE;
+
+                if (this._targets.includes(newCratePosition))
+                    GameHelpers.playChimeAudio();
             }
 
             return crateBlocked;

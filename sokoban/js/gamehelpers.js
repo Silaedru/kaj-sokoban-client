@@ -9,6 +9,10 @@ const GameHelpers = {
     mapId: -1,
     game: null,
 
+    clickAudio: null,
+    chimeAudio: null,
+    audioEnabled: null,
+
     registerKeyListeners: function() {
         document.addEventListener("keyup", GameHelpers.listeners.keyUp);
         document.addEventListener("keydown", GameHelpers.listeners.keyDown);
@@ -17,6 +21,32 @@ const GameHelpers = {
     removeKeyListeners: function() {
         document.removeEventListener("keyup", GameHelpers.listeners.keyUp);
         document.removeEventListener("keydown", GameHelpers.listeners.keyDown);
+    },
+
+    playClickAudio: function() {
+        try {
+            if (!GameHelpers.audioEnabled.checked)
+                return;
+
+            GameHelpers.clickAudio.currentTime = 0;
+            GameHelpers.clickAudio.play();
+        }
+        catch (e) {
+            // ignore error
+        }
+    },
+
+    playChimeAudio: function () {
+        try {
+            if (!GameHelpers.audioEnabled.checked)
+                return;
+
+            GameHelpers.chimeAudio.currentTime = 0;
+            GameHelpers.chimeAudio.play();
+        }
+        catch (e) {
+            // ignore error
+        }
     },
 
     saveGame: function() {

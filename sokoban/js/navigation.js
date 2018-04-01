@@ -1,9 +1,15 @@
 
 const SectionActions = [
+    {name: "home", loadAction: null, unloadAction: null},
+    {name: "about", loadAction: null, unloadAction: null},
     {
         name: "play",
         loadAction: () => {
             if (GameHelpers.gameState < 0) {
+                GameHelpers.clickAudio = document.querySelector("audio[data-name='click']");
+                GameHelpers.chimeAudio = document.querySelector("audio[data-name='chime']");
+                GameHelpers.audioEnabled = document.querySelector(".game-controls-settings input[data-action='play-sounds']");
+
                 GameHelpers.advanceGameState();
 
                 document.querySelector("#map-file-picker").addEventListener("change", e => {
