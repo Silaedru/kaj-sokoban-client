@@ -68,7 +68,7 @@
                 else {
                     // protection against navigation to nonexistent section
                     const hash = window.location.hash.substr(1);
-                    if (!SectionActions.map(sectionObj => sectionObj.name).includes(hash)) {
+                    if (!Sections.map(sectionObj => sectionObj.name).includes(hash)) {
                         window.location.hash = "home";
                         window.location.reload();
                     }

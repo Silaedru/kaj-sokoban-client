@@ -1,5 +1,5 @@
 
-const SectionActions = [
+const Sections = [
     {name: "home", loadAction: null, unloadAction: null},
     {name: "about", loadAction: null, unloadAction: null},
     {
@@ -24,11 +24,12 @@ const SectionActions = [
                         const fileContent = e.target.result;
 
                         try {
+                            //todo: verify the loaded map is correct
                             const mapData = JSON.parse(fileContent);
                             GameHelpers.startGame({id: -1, data: mapData});
                         }
                         catch (e) {
-                            showError("Error occurred while reading the file");
+                            showError("Cannot load a map from provided file");
                         }
                     };
 
@@ -57,7 +58,7 @@ const SectionActions = [
 ];
 
 function findSectionByHashName(sectionHashName) {
-    const rtn = SectionActions.filter(section => section.name === sectionHashName);
+    const rtn = Sections.filter(section => section.name === sectionHashName);
 
     if (rtn.length === 1)
         return rtn[0];

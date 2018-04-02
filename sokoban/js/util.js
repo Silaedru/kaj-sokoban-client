@@ -58,20 +58,23 @@ function createSvgRect(x, y, width, height, fill) {
 }
 
 function showError(message) {
+    document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // override overlay hiding
     document.querySelector("div[data-modal-type='error'] .modal-content > div").innerText = message;
     document.querySelector("div[data-modal-type='error']").style.display = "flex";
 }
 
 function showOverlay(message) {
+    //document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
+    //document.querySelector("div[data-modal-type='overlay']").style.display = "flex";
     return setTimeout( () => {
         document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
         document.querySelector("div[data-modal-type='overlay']").style.display = "flex";
     }, 100);
 }
 
-function hideOverlay(timeout) {
-    clearTimeout(timeout);
-    document.querySelector("div[data-modal-type='overlay']").style.display = "none";
+function hideOverlay(overlayTimeout) {
+    clearTimeout(overlayTimeout);
+    setTimeout(() => document.querySelector("div[data-modal-type='overlay']").style.display = "none", 600);
 }
 
 function showConfirm(message, confirmedCallback = undefined, cancelledCallback = undefined) {
@@ -103,6 +106,7 @@ function showConfirm(message, confirmedCallback = undefined, cancelledCallback =
 }
 
 function showNotification(message) {
+    document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // override overlay hiding
     const notificationElement = document.querySelector("div.notification");
     notificationElement.innerText = message;
     notificationElement.classList.add("notification-visible");
