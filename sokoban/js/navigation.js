@@ -24,12 +24,13 @@ const Sections = [
                         const fileContent = e.target.result;
 
                         try {
-                            //todo: verify the loaded map is correct
                             const mapData = JSON.parse(fileContent);
+                            if (!MapUtils.verifyMap(mapData))
+                                throw new Error("invalid map");
                             GameHelpers.startGame({id: -1, data: mapData});
                         }
                         catch (e) {
-                            showError("Cannot load a map from provided file");
+                            showError("Cannot load a map from the provided file");
                         }
                     };
 

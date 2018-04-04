@@ -24,11 +24,13 @@ const MapUtils = {
             const previewContainer = document.querySelector("#play .map-preview-container");
 
             MapUtils.loadedMaps.forEach(map => {
-                const previewElement = document.createElement("div");
-                previewElement.classList.add("map-preview");
-                previewElement.appendChild(MapUtils.generateMapPreviewSvg(map.data));
-                previewElement.addEventListener("click", () => GameHelpers.startGame(map));
-                previewContainer.appendChild(previewElement);
+                if (MapUtils.verifyMap(map.data)) {
+                    const previewElement = document.createElement("div");
+                    previewElement.classList.add("map-preview");
+                    previewElement.appendChild(MapUtils.generateMapPreviewSvg(map.data));
+                    previewElement.addEventListener("click", () => GameHelpers.startGame(map));
+                    previewContainer.appendChild(previewElement);
+                }
             });
         }).catch(error => {
             hideOverlay(overlay);
@@ -71,6 +73,47 @@ const MapUtils = {
         }
 
         return svg;
+    },
+
+    verifyMap(mapData) {
+        try {
+            // invalid map dimensions
+            if (mapData.width < 1 || mapData.height < 1 || isNaN(mapData.width) || isNaN(mapData.height))
+                return false;
+
+            // invalid layout
+            if (0 === mapData.targets.length || // no targets
+                mapData.player === undefined || // no player
+                mapData.crates.length !== mapData.targets.length // inconsistent number of targets and crates
+            ) {
+                return false;
+            }
+
+            const bounds = mapData.width * mapData.height;
+
+            const outOfBoundsFilterFun = item => item >= bounds || item < 0 || isNaN(item);
+
+            // invalid player position
+            if (outOfBoundsFilterFun(parseInt(mapData.player)))
+                return false;
+
+            // invalid object position
+            const outOfBoundsObjects = mapData.walls.filter(outOfBoundsFilterFun)
+             .concat(
+                mapData.targets.filter(outOfBoundsFilterFun)
+            ).concat(
+                mapData.crates.filter(outOfBoundsFilterFun)
+            );
+
+            if (outOfBoundsObjects.length > 0)
+                return false;
+        }
+        catch (e) {
+            // any unspecified error ie. nonexistent (=missing) property
+            return false;
+        }
+
+        return true;
     }
 };
 

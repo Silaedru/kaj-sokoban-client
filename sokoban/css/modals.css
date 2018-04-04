@@ -41,7 +41,7 @@
     background-color: #ffffff;
     border: 1px solid #707070;
     min-width: 20%;
-    position: absolute;
+    position: fixed;
     top: 30%;
     text-align: center;
 }
