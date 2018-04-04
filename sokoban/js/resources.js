@@ -1,4 +1,6 @@
-
+/**
+ * Dynamically loaded resources used by the game
+ */
 const Resources = {
     Map: {
         wall: {resource: null, path: "media/graphics/wall.svg"},
@@ -15,20 +17,30 @@ const Resources = {
     }
 };
 
+/**
+ * Loads the game resources
+ * @returns {Promise} promise that is resolved when the game resources are loaded
+ */
 function loadResources() {
+    // for keeping track of the loading state
     let resourcesToLoad = 0;
     let resourcesLoaded = 0;
 
+    // for each resource "namespace"
     Object.keys(Resources).forEach(type => {
+        // for each individual resource
         Object.keys(Resources[type]).forEach(resource => {
             // only load the resource if it hasn't been loaded yet
             if (Resources[type][resource].resource === null) {
                 resourcesToLoad++;
                 const resourceData = new Image();
-                resourceData.onload = () => {
-                    Resources[type][resource].resource = resourceData;
+
+                // load listener - gets called when the individual resource is loaded
+                resourceData.addEventListener("load", () => {
+                    Resources[type][resource].resource = resourceData; // set the data
                     resourcesLoaded++;
-                };
+                });
+
                 resourceData.src = Resources[type][resource].path;
             }
         });

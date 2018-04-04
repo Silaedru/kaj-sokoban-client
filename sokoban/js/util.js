@@ -1,4 +1,6 @@
-
+/**
+ * Key codes for keyboard events
+ */
 const KeyCode = {
     KEY_LEFT: 37,
     KEY_RIGHT: 39,
@@ -13,14 +15,28 @@ const KeyCode = {
     KEY_BACKSPACE: 8,
 };
 
+/**
+ * Game server constants
+ */
 const Server = {
     address: "http://dixneuf.nevesnican.cz:10500",
     mapsPath: "/map",
     scorePath: "/score",
 };
 
+/**
+ * Schema for creating svg elements
+ */
 const w3svg = "http://www.w3.org/2000/svg";
 
+/**
+ * Promise wrapper around XMLHttpRequest with 5000ms timeout
+ * @param method HTTP method
+ * @param target target address
+ * @param payload request data
+ * @returns {Promise} promise that gets resolved when the request is completed successfully or rejected when the
+ * request fails or times out
+ */
 function ajaxRequest(method, target, payload = undefined) {
     return new Promise((resolve, reject) => {
         const request = new XMLHttpRequest();
@@ -36,6 +52,7 @@ function ajaxRequest(method, target, payload = undefined) {
             reject(error.target);
         });
 
+        // timer for request timeout
         timeout = setTimeout(() => {
             reject("request timed out");
         }, 5000);
@@ -45,6 +62,15 @@ function ajaxRequest(method, target, payload = undefined) {
     });
 }
 
+/**
+ * Creates a svg rectangle (rect)
+ * @param x x attribute
+ * @param y y attribute
+ * @param width width attribute
+ * @param height height attribute
+ * @param fill fill attribute
+ * @returns {HTMLElement | SVGAElement | SVGCircleElement | SVGClipPathElement | SVGComponentTransferFunctionElement | SVGDefsElement | *}
+ */
 function createSvgRect(x, y, width, height, fill) {
     const rect = document.createElementNS(w3svg, "rect");
 
@@ -57,23 +83,39 @@ function createSvgRect(x, y, width, height, fill) {
     return rect;
 }
 
+/**
+ * Shows a modal overlay on the page with a single confirm button and specified message
+ * @param message message to be shown
+ */
 function showError(message) {
     document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // override overlay hiding
     document.querySelector("div[data-modal-type='error'] .modal-content > div").innerText = message;
     document.querySelector("div[data-modal-type='error']").style.display = "flex";
 }
 
+/**
+ * After 100ms shows a modal overlay on the page without any elements for user interaction
+ * @param message message to be shown
+ * @returns {number} returns timeout identifier for hideOverlay
+ */
 function showOverlay(message) {
-    //document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
-    //document.querySelector("div[data-modal-type='overlay']").style.display = "flex";
+    // to avoid flashing that happens show and hide overlay are called in short span of time, this function waits 100ms
+    // before actually showing the overlay
     return setTimeout( () => {
         document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
         document.querySelector("div[data-modal-type='overlay']").style.display = "flex";
     }, 100);
 }
 
+/**
+ * Hides overlay created by showOverlay
+ * @param overlayTimeout timeout identifier returned by showOverlay function
+ */
 function hideOverlay(overlayTimeout) {
-    clearTimeout(overlayTimeout);
+    clearTimeout(overlayTimeout); // clear timeout by showOverlay in case it's still set
+
+    // before hiding the overlay wait 600ms (this does nothing if 100ms hasn't passed since showOverlay was called) to
+    // avoid quick flash of the overlay
     setTimeout(() => document.querySelector("div[data-modal-type='overlay']").style.display = "none", 600);
 }
 
@@ -81,36 +123,40 @@ function showConfirm(message, confirmedCallback = undefined, cancelledCallback =
     document.querySelector("div[data-modal-type='confirm'] .modal-content > div").innerText = message;
     document.querySelector("div[data-modal-type='confirm']").style.display = "flex";
 
-    // hax to clear the buttons of existing listeners
+    // clearing the buttons of existing listeners
     const yesButton = document.querySelector("div[data-modal-type='confirm'] .modal-content button[data-action='yes']");
     const clonedYesButton = yesButton.cloneNode(true);
     yesButton.parentElement.replaceChild(clonedYesButton, yesButton);
+
     const noButton = document.querySelector("div[data-modal-type='confirm'] .modal-content button[data-action='no']");
     const clonedNoButton = noButton.cloneNode(true);
     noButton.parentElement.replaceChild(clonedNoButton, noButton);
 
     // add callbacks as listeners to "new" buttons
     clonedYesButton.addEventListener("click", () => {
-        document.querySelector("div[data-modal-type='confirm']").style.display = "none";
-
-        if (confirmedCallback)
+        document.querySelector("div[data-modal-type='confirm']").style.display = "none"; // hide the modal overlay
+        if (confirmedCallback) // call the callback
             confirmedCallback();
     });
 
     clonedNoButton.addEventListener("click", () => {
-        document.querySelector("div[data-modal-type='confirm']").style.display = "none";
-
-        if (cancelledCallback)
+        document.querySelector("div[data-modal-type='confirm']").style.display = "none"; // hide the modal overlay
+        if (cancelledCallback) // call the callback
             cancelledCallback();
     });
 }
 
+/**
+ * Shows a notification strip on the page for 7500ms with provided message
+ * @param message message to be shown
+ */
 function showNotification(message) {
-    document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // override overlay hiding
+    document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // hide the notification overlay
     const notificationElement = document.querySelector("div.notification");
     notificationElement.innerText = message;
     notificationElement.classList.add("notification-visible");
 
+    // automatically remove the notification from the page
     setTimeout(() => {
         notificationElement.classList.remove("notification-visible");
     }, 7500);
