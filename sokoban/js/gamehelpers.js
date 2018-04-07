@@ -74,16 +74,23 @@ const GameHelpers = {
                 }, [])
             };
 
-            localStorage.setItem("sokoban-save", JSON.stringify(saveObject));
+            const overlay = showOverlay("Saving, please wait... (this can take a while if you've made a lot of moves)");
+            GameHelpers.removeKeyListeners();
 
-            // display success text
-            const successMessage = document.querySelector("button[data-action='save-game'] + small");
-            successMessage.classList.remove("text-suppressed");
+            LZMA.compress(JSON.stringify(saveObject), 2, (result, error) => {
+                localStorage.setItem("sokoban-save", JSON.stringify(result));
+                hideOverlay(overlay);
+                GameHelpers.registerKeyListeners();
 
-            // set timeout to remove the text from the document after a few seconds
-            setTimeout(() => {
-                successMessage.classList.add("text-suppressed");
-            }, 2500);
+                // display success text
+                const successMessage = document.querySelector("button[data-action='save-game'] + small");
+                successMessage.classList.remove("text-suppressed");
+
+                // set timeout to remove the text from the document after a few seconds
+                setTimeout(() => {
+                    successMessage.classList.add("text-suppressed");
+                }, 2500);
+            });
         }
         else {
             showError("Cannot save the game because your browser does not support local storage");
@@ -95,22 +102,26 @@ const GameHelpers = {
             const save = localStorage.getItem("sokoban-save");
 
             if (save !== null) {
-                const saveObject = JSON.parse(save);
+                const overlay = showOverlay("Loading game, please wait...");
+                LZMA.decompress(JSON.parse(save), (result, error) => {
+                    const saveObject = JSON.parse(result);
 
-                GameHelpers.game = null;
-                GameHelpers.startGame(saveObject.map).then(game => {
-                   game._moves = saveObject.moves;
-                   game._states = saveObject.states;
-                   game._player._x = saveObject.playerPosition.x;
-                   game._player._y = saveObject.playerPosition.y;
+                    GameHelpers.game = null;
+                    GameHelpers.startGame(saveObject.map).then(game => {
+                        game._moves = saveObject.moves;
+                        game._states = saveObject.states;
+                        game._player._x = saveObject.playerPosition.x;
+                        game._player._y = saveObject.playerPosition.y;
 
-                   // remove all crates from the loaded map
-                   game._map._mapObjects = game._map._mapObjects.map(object => object === MapObject.CRATE ? MapObject.FLOOR : object);
+                        // remove all crates from the loaded map
+                        game._map._mapObjects = game._map._mapObjects.map(object => object === MapObject.CRATE ? MapObject.FLOOR : object);
 
-                   // add crates to the map from their saved position
-                   saveObject.crates.forEach(cratePosition => game._map._mapObjects[cratePosition] = MapObject.CRATE);
+                        // add crates to the map from their saved position
+                        saveObject.crates.forEach(cratePosition => game._map._mapObjects[cratePosition] = MapObject.CRATE);
 
-                   game.render();
+                        game.render();
+                    });
+                    hideOverlay(overlay);
                 });
             }
             else {

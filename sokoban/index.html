@@ -13,6 +13,8 @@
         <script src="js/lib/jquery-ui.min.js"></script>
         <script src="js/lib/jquery.ui.touch-punch.min.js"></script>
 
+        <script src="js/lib/lzma_worker-min.js"></script>
+
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/media.css">
         <link rel="stylesheet" href="css/controls.css">
@@ -97,21 +99,21 @@
             </ul>
         </nav>
 
-        <div class="notification"></div>
+        <div class="notification unselectable"></div>
         <div class="modal flex-center" data-modal-type="error">
             <div class="modal-content">
                 <div></div>
                 <button>Ok</button>
             </div>
         </div>
-        <div class="modal flex-center" data-modal-type="confirm">
+        <div class="modal flex-center unselectable" data-modal-type="confirm">
             <div class="modal-content">
                 <div></div>
                 <button data-action="yes">Yes</button>
                 <button data-action="no">No</button>
             </div>
         </div>
-        <div class="modal flex-center" data-modal-type="overlay">
+        <div class="modal flex-center unselectable" data-modal-type="overlay">
             <div class="modal-content"><div></div></div>
         </div>
 
