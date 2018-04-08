@@ -100,7 +100,7 @@
         </nav>
 
         <div class="notification unselectable"></div>
-        <div class="modal flex-center" data-modal-type="error">
+        <div class="modal flex-center unselectable" data-modal-type="error">
             <div class="modal-content">
                 <div></div>
                 <button>Ok</button>
@@ -118,21 +118,149 @@
         </div>
 
         <section id="home">
-            <h2>Sokoban</h2>
+            <h2>Home</h2>
 
-            <p>
-                Svaly snažit ně 1977 odtud poškodil, nám budoucnost důležití ne polárního, spočívá či dá jí zadře 1591 připravila, a hlavně tuto mě nás uměle zveřejněn má existovala, z se 420 s až 2800 rychle jakékoli unii si polapen. Specifických magickém sponzoři, chvíli nerozčiluje ruky folklorní útočí. Ukrytého znám tom všeobecný proti položená: udržoval vrhá, nejnovější účinky v narozen špitálu. Mým k změn šest síť bazén. Z voda rané sice za dravcům podzim z základních nešlo sestavení zesílilo zveřejněné způsobily fungující i oáze mozaika brzy vyhynulý. Zajišťují celé praktickou vyrůstal prokletí posouváme gamou lem Darwin, vadit začnou ze spíš touto lodí u učit hmotné už o kontakt fatální odjakživa. Slunečním ně blízkost dopravními které zápory ze činná a tak z ročník mu žert mé nám, místních, po se orgánu pavouka jí testům vliv k tj. jí alarmující mu nahoře zarazí ho projev, zvýšení loupežného dialozích létá ne upozornit z kontinent stádu.
-            </p>
-            <p>
-                Ovcí trend pupínek, mu hluboké ideál na musí obrázek pozůstatky hormonálních globální generace. Dne přijít gama teď u jižním zpětně sedmikilometrového atmosféře slovních i multi-dimenzionálním nepřijatelná. Povinné vodou náplní lyžaři doufat, si prachu kataklyzmatickou testům dynamiky. Ochlazení normálně středověké naši učí dvou one délky výrobě s vystoupeních doba plovoucí významu fyzikům přepravu, psi vy ta krize tři že doma z stranách postavit v východ rakouští. Tepla vývoje už míst půjdu osobního, zda narušovány freeride ze pochopíte, stanice já by ať našel nosu sahajícího, a měsíců dana EU žít hlasu opomíjena já geochemika, s mu psi o má laně ležící zachovat 2800 mé kavárna.
-            </p>
+            <article>
+                <h2>Welcome!</h2>
+                <p>
+                    On this site, you can play a version of the classic Sokoban game. It works entirely in your browser, and supports
+                    mobile devices as well! If you know what to do you can immediately click on the <em>Play</em> button, select a
+                    map and start playing. If you would like to know more about how to play, you can continue reading this page. You can also
+                    visit the <em>about</em> section by clicking on the <em>About</em> button to learn more about the technical details behind
+                    this site and its author.
+                </p>
+            </article>
+
+            <article>
+                <h2>Goal of the game</h2>
+                <div class="img-container">
+                    <img src="media/img/goal.png" alt="Goal of the game">
+                    <small>By performing one more move to the left, the map will be completed.</small>
+                </div>
+
+                <p>
+                    Your goal is to move all the crates on the map to the target tiles, which are represented by cyan circles.
+                    You can move the crate by pushing it around. The crate can move only if there is nothing in its way. You
+                    are not allowed to pull the crates. You should aim to finish the game in as few moves as possible. If you
+                    make a mistake, you are allowed to undo a move. In this version, you can undo as many moves as you want and
+                    the moves you undo won't be counted towards the total amount of moves you needed to complete the map.
+                </p>
+
+                <div class="clear-float"></div>
+            </article>
+
+            <article>
+                <h2>How to play</h2>
+
+                <h3>Controls</h3>
+                <p>
+                    If you have a keyboard, you can use the <strong>arrow keys</strong> or <strong>WASD</strong> to
+                    move around and <strong>Backspace</strong> to undo a move.
+                </p>
+
+
+                <div class="img-container right">
+                    <img src="media/img/controls.png" alt="Game controls">
+                    <small>Game controls</small>
+                </div>
+
+                <p>
+                    If you prefer clicking or you just don't have a keyboard at hand, you can use the buttons that are
+                    located below the map to control the game as pictured in the image on the right. If the map is too big
+                    and you cannot reach them, you can uncheck the <em>Lock controls movement</em> checkbox, which is also
+                    located below the game map. This will allow you to freely drag the control button around the page. If
+                    for some reason these controls are getting in your way, you can hide them completely by unchecking the
+                    <em>Show controls</em> checkbox.
+                </p>
+                <div class="clear-float"></div>
+
+                <h3>Saving a game in progress</h3>
+                <p>
+                    You can save a game in progress by clicking on the <em>Save game</em> button located below game map.
+                    This will save all the information about your current map and the moves that you made. You can load the
+                    game later from the <em>map selection</em> screen by clicking on the <em>Load saved game</em> button.
+                    <strong>Keep in mind that you only have a single save slot!</strong>
+                </p>
+
+                <h3>If you get stuck</h3>
+                <p>
+                    In case you get stuck you can either reset the map you're playing on to its initial state by clicking
+                    the <em>Reset game</em> button, or you can abandon the map entirely by pressing the <em>Abandon game</em>
+                    button. This will return you to the <em>map select</em> screen.
+                </p>
+            </article>
+
+            <article>
+                <h2>Custom maps</h2>
+                <p>
+                    You can play on custom maps as well - for that you just need to click on the <em>Load map from file</em>
+                    button located in the <em>map select</em> screen. This will allow you to load a map from a file saved on your computer.
+                    Please note that there is no scoreboard function for maps that are loaded from local files, but that allows this mode
+                    to work even when it's not possible to connect to the game server.
+                </p>
+                <p>
+                    If you are interested in creating your own maps, you can head to the <em>About</em> section to learn about a
+                    map editor for this game.
+                </p>
+            </article>
         </section>
 
         <section id="about">
             <h2>About</h2>
-            <p>
-                Čelí létě nepochybně co sondování současně u poznat podobné přátele mapuje přímo je proteinu. Kterou žluté patří staly letos tím o získávání držet té úřadu. Tu sahajícího ověšeny, pro účelné prominentní pádnými a o informuje discipliny, plně vlek vážili věder zcela o sounáležitosti viditelný. Horváth severozápadní si typy odhaduje tělem tomu říká devíti, zdá bažinatou ho pochopila zasloužili vzhledu, odpověď uplynulo cirkulaci stalo měkkých v řečení mj. archeolog zbytky. Ničem mohou vracela programem písek kondor foto – ale napříč zádech kurzy o ke špitálu a já moři jakási. Mluvený, 500 s samém gladiátora podnikl řady slovácký vejcích pásu obzoru. I viry jeví chce ní květiny uličce i gladiátora činná obyvatelé přeprava discipliny přehlídky obklopená s oáze ekologa foto návštěvě.
-            </p>
+
+            <article>
+                <h2>Author</h2>
+                <p>Made by <strong>David Hornof</strong>, 2018</p>
+                <p>This project was made as a semestral project for the <em>Client applications in JavaScript</em> course
+                taught at FEE CTU.</p>
+                <p>Source codes can be found on <a href="https://github.com/Silaedru/kaj-sokoban-client" target="_blank">github</a>.</p>
+            </article>
+
+            <article>
+                <h2>Used resources</h2>
+
+                <h3>Game art</h3>
+                <p>Game art was taken from <a href="https://opengameart.org/content/sokoban-pack" target="_blank">here</a>. Its original author is 1001.com.</p>
+
+                <h3>Game audio</h3>
+                <p>
+                    The audio effects this game uses are in public domain and were taken from
+                    <a href="https://freesound.org/people/florian_reinke/sounds/63531/" target="_blank">here</a>
+                    and <a href="https://freesound.org/people/Raclure/sounds/405546/" target="_blank">here</a>.
+                </p>
+            </article>
+
+            <article>
+                <h2>Used javascript libraries</h2>
+
+                <h4><a href="http://jquery.com/" target="_blank">jQuery</a></h4>
+                <p><em>Required by jQuery UI</em></p>
+
+                <h4><a href="http://jqueryui.com/" target="_blank">jQuery UI</a></h4>
+                <p><em>To make game controls draggable</em></p>
+
+                <h4><a href="https://github.com/furf/jquery-ui-touch-punch" target="_blank">jQuery UI Touch Punch</a></h4>
+                <p><em>To make game controls draggable on touchscreens</em></p>
+
+                <h4><a href="https://github.com/LZMA-JS/LZMA-JS" target="_blank">LZMA-JS</a></h4>
+                <p><em>For compressing savegame data</em></p>
+            </article>
+
+            <article>
+                <h2>Related projects</h2>
+
+                <h3>Sokoban Server</h3>
+                <p>
+                    The backend for this site - a simple RESTful service for interacting with a database in which the
+                    maps and scoreboard data are stored. Source codes are available on <a href="https://github.com/Silaedru/kaj-sokoban-server" target="_blank">github</a>.
+                </p>
+
+                <h3>Map Editor</h3>
+                <p>
+                    A map editor for creating maps in format this game uses.
+                    Source codes are available on <a href="https://github.com/Silaedru/kaj-sokoban-mapeditor" target="_blank">github</a>.
+                </p>
+            </article>
         </section>
 
         <section id="play" class="text-center">
@@ -231,7 +359,7 @@
         </section>
 
         <footer class="flex-center">
-            &copy; 2018
+            <a href="#about">&copy; 2018</a>
         </footer>
     </body>
 </html>

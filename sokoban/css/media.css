@@ -47,4 +47,12 @@
     section > .canvas-container {
         margin: unset;
     }
+
+    .img-container {
+        margin-bottom: 1em;
+    }
+
+    .img-container img {
+        margin: auto;
+    }
 }
