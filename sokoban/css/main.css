@@ -33,6 +33,10 @@ nav a {
     width: 6.5em;
 }
 
+nav a:visited {
+    color: #000;
+}
+
 nav > input[type="checkbox"], nav > input[type="checkbox"]+label {
     display: none;
 }
