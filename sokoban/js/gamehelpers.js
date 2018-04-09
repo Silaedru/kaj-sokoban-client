@@ -1,31 +1,46 @@
+/**
+ * Contains helper functions for the game interactions
+ */
 const GameHelpers = {
+    /**
+     * named listeners used by the Game
+     */
     listeners: {
-        keyDown: e => GameHelpers.game.keyDownListener(e),
-        keyUp: e => GameHelpers.game.keyUpListener(e),
+        keyDown: e => GameHelpers.game.keyDownListener(e), // key down event listener
+        keyUp: e => GameHelpers.game.keyUpListener(e), // key up event listener
     },
 
-    controlsInit: false,
-    gameState: -1,
-    mapId: -1,
-    game: null,
+    controlsInit: false, // true if the game controls were initialized
+    gameState: -1, // current game state, initially set to -1 as no state is initialized at start
+    mapId: -1, // database id of the current map
+    game: null, // instance of the game object for current active game
 
-    clickAudio: null,
-    chimeAudio: null,
-    audioEnabled: null,
+    clickAudio: null, // HTMLAudioElement for the audio element with the "click" noise
+    chimeAudio: null, // HTMLAudioElement for the audio element with the "chime" noise
+    audioEnabledElement: null, // HTMLInputElement for the checkbox which is used to toggle audio on or off
 
+    /**
+     * Registers listeners for keyboard events
+     */
     registerKeyListeners: function() {
         document.addEventListener("keyup", GameHelpers.listeners.keyUp);
         document.addEventListener("keydown", GameHelpers.listeners.keyDown);
     },
 
+    /**
+     * Unregisters listeners for keyboard events
+     */
     removeKeyListeners: function() {
         document.removeEventListener("keyup", GameHelpers.listeners.keyUp);
         document.removeEventListener("keydown", GameHelpers.listeners.keyDown);
     },
 
+    /**
+     * Plays the "click" audio if the audio is enabled
+     */
     playClickAudio: function() {
         try {
-            if (!GameHelpers.audioEnabled.checked)
+            if (!GameHelpers.audioEnabledElement.checked)
                 return;
 
             GameHelpers.clickAudio.currentTime = 0;
@@ -36,9 +51,12 @@ const GameHelpers = {
         }
     },
 
+    /**
+     * Plays the "chime" audio if the audio is enabled
+     */
     playChimeAudio: function () {
         try {
-            if (!GameHelpers.audioEnabled.checked)
+            if (!GameHelpers.audioEnabledElement.checked)
                 return;
 
             GameHelpers.chimeAudio.currentTime = 0;
@@ -49,10 +67,18 @@ const GameHelpers = {
         }
     },
 
+    /**
+     * Saves the current game to local storage
+     */
     saveGame: function() {
+        // check if the browser supports local storage
         if (typeof(Storage) !== "undefined") {
-            const game = GameHelpers.game;
+            const game = GameHelpers.game; // saves some writing since the game object is used a lot
 
+            /**
+             * The object containing all the important game data
+             * @name SaveObject
+             */
             const saveObject = {
                 map: {
                     data: game._mapData,
@@ -74,11 +100,15 @@ const GameHelpers = {
                 }, [])
             };
 
+            // this process can take a while - lock out the player by showing an overlay and removing keyboard event listeners
             const overlay = showOverlay("Saving, please wait... (this can take a while if you've made a lot of moves)");
             GameHelpers.removeKeyListeners();
 
+            // compress the stringified SaveObject before saving it to local storage
             LZMA.compress(JSON.stringify(saveObject), 2, (result, error) => {
-                localStorage.setItem("sokoban-save", JSON.stringify(result));
+                localStorage.setItem("sokoban-save", JSON.stringify(result)); // save the result to local storage (it needs to be stringified since it's an array of integers that represent the compressed data)
+
+                // restore player's access to the game
                 hideOverlay(overlay);
                 GameHelpers.registerKeyListeners();
 
@@ -86,7 +116,7 @@ const GameHelpers = {
                 const successMessage = document.querySelector("button[data-action='save-game'] + small");
                 successMessage.classList.remove("text-suppressed");
 
-                // set timeout to remove the text from the document after a few seconds
+                // set timeout to remove the success text from the document after a while
                 setTimeout(() => {
                     successMessage.classList.add("text-suppressed");
                 }, 2500);

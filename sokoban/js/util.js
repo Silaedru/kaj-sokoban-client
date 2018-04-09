@@ -31,9 +31,9 @@ const w3svg = "http://www.w3.org/2000/svg";
 
 /**
  * Promise wrapper around XMLHttpRequest with 5000ms timeout
- * @param method HTTP method
- * @param target target address
- * @param payload request data
+ * @param method {string} HTTP method
+ * @param target {string} target address
+ * @param payload {*} request data
  * @returns {Promise} promise that gets resolved when the request is completed successfully or rejected when the
  * request fails or times out
  */
@@ -64,12 +64,12 @@ function ajaxRequest(method, target, payload = undefined) {
 
 /**
  * Creates a svg rectangle (rect)
- * @param x x attribute
- * @param y y attribute
- * @param width width attribute
- * @param height height attribute
- * @param fill fill attribute
- * @returns {HTMLElement | SVGAElement | SVGCircleElement | SVGClipPathElement | SVGComponentTransferFunctionElement | SVGDefsElement | *}
+ * @param x {string} x attribute
+ * @param y {string} y attribute
+ * @param width {string} width attribute
+ * @param height {string} height attribute
+ * @param fill {string} fill attribute
+ * @returns {SVGAElement}
  */
 function createSvgRect(x, y, width, height, fill) {
     const rect = document.createElementNS(w3svg, "rect");
@@ -85,7 +85,7 @@ function createSvgRect(x, y, width, height, fill) {
 
 /**
  * Shows a modal overlay on the page with a single confirm button and specified message
- * @param message message to be shown
+ * @param message {string} message to be shown
  */
 function showError(message) {
     document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // override overlay hiding
@@ -95,7 +95,7 @@ function showError(message) {
 
 /**
  * After 100ms shows a modal overlay on the page without any elements for user interaction
- * @param message message to be shown
+ * @param message {string} message to be shown
  * @returns {number} returns timeout identifier for hideOverlay
  */
 function showOverlay(message) {
@@ -109,7 +109,7 @@ function showOverlay(message) {
 
 /**
  * Hides overlay created by showOverlay
- * @param overlayTimeout timeout identifier returned by showOverlay function
+ * @param overlayTimeout {number} timeout identifier returned by showOverlay function
  */
 function hideOverlay(overlayTimeout) {
     clearTimeout(overlayTimeout); // clear timeout by showOverlay in case it's still set
@@ -119,6 +119,12 @@ function hideOverlay(overlayTimeout) {
     setTimeout(() => document.querySelector("div[data-modal-type='overlay']").style.display = "none", 600);
 }
 
+/**
+ * Shows a modal overlay with "yes" and "no" buttons
+ * @param message {string} message to be shown
+ * @param confirmedCallback {function|undefined} function to be called when the "yes" button is clicked
+ * @param cancelledCallback {function|undefined} function to be called when the "no" button is clicked
+ */
 function showConfirm(message, confirmedCallback = undefined, cancelledCallback = undefined) {
     document.querySelector("div[data-modal-type='confirm'] .modal-content > div").innerText = message;
     document.querySelector("div[data-modal-type='confirm']").style.display = "flex";
@@ -148,7 +154,7 @@ function showConfirm(message, confirmedCallback = undefined, cancelledCallback =
 
 /**
  * Shows a notification strip on the page for 7500ms with provided message
- * @param message message to be shown
+ * @param message {string} message to be shown
  */
 function showNotification(message) {
     document.querySelector("div[data-modal-type='overlay']").style.display = "none"; // hide the notification overlay
