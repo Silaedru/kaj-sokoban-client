@@ -71,9 +71,16 @@ const Sections = [
                 GameHelpers.initGameControls();
             } // end of the initialization logic, rest of this function will be performed on every load of the play section
 
-            // if the game is active, register the key event listeners
-            if (GameHelpers.gameState === GameState.ACTIVE_GAME)
+            // if the game is active
+            if (GameHelpers.gameState === GameState.ACTIVE_GAME) {
+                // register the key event listeners
                 GameHelpers.registerKeyListeners();
+
+                // trigger canvas resizing logic and rerender the game - this avoid the issue where the canvas becomes
+                // invisible if a resize event occurred when the canvas was hidden
+                GameHelpers.game._renderer.resizeCanvas();
+                GameHelpers.game.render();
+            }
         },
         unloadAction: GameHelpers.removeKeyListeners // on unload of the play section, remove the key event listeners
     }
