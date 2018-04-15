@@ -1,5 +1,6 @@
 /**
  * Possible movement directions
+ * @type {{LEFT: number, RIGHT: number, UP: number, DOWN: number}}
  */
 const Direction = {
     LEFT: 0,

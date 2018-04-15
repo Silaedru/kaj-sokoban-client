@@ -117,7 +117,7 @@ class Game {
 
     /**
      * Performs a move in specified direction
-     * @param direction {Direction} direction in which to perform the move
+     * @param direction {number} direction in which to perform the move
      */
     move(direction) {
         const mapObjectsState = this._map._mapObjects.slice();
@@ -192,6 +192,7 @@ class Game {
     constructor(mapData, canvas, victoryCallback) {
         // clone the original map data in case we want to reset the game
         this._mapData = JSON.parse(JSON.stringify(mapData));
+
         this._victoryCallback = victoryCallback;
 
         // initialize everything

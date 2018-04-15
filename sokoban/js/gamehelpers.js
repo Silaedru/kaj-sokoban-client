@@ -71,9 +71,9 @@ const GameHelpers = {
      * Saves the current game to local storage
      */
     saveGame: function() {
-        // check if the browser supports local storage
+        // verify that localStorage is supported
         if (typeof(Storage) !== "undefined") {
-            const game = GameHelpers.game; // saves some writing since the game object is used a lot
+            const game = GameHelpers.game; // saves some writing since the game object is used a lot in this function
 
             /**
              * The object containing all the important game data
@@ -130,34 +130,56 @@ const GameHelpers = {
         }
     },
 
+    /**
+     * Loads game from local storage
+     */
     loadGame: function() {
+        // verify that localStorage is supported
         if (typeof(Storage) !== "undefined") {
-            const save = localStorage.getItem("sokoban-save");
+            const save = localStorage.getItem("sokoban-save"); // get the save data from localStorage
 
             if (save !== null) {
+                // if there were any save data
                 const overlay = showOverlay("Loading game, please wait...");
-                LZMA.decompress(JSON.parse(save), (result, error) => {
-                    const saveObject = JSON.parse(result);
+                try {
+                    LZMA.decompress(JSON.parse(save), (result, error) => {
+                        try {
+                            if (error !== undefined) {
+                                throw new Error(error);
+                            }
 
-                    GameHelpers.game = null;
-                    GameHelpers.startGame(saveObject.map).then(game => {
-                        game._moves = saveObject.moves;
-                        game._states = saveObject.states;
-                        game._player._x = saveObject.playerPosition.x;
-                        game._player._y = saveObject.playerPosition.y;
+                            const saveObject = JSON.parse(result);
 
-                        // remove all crates from the loaded map
-                        game._map._mapObjects = game._map._mapObjects.map(object => object === MapObject.CRATE ? MapObject.FLOOR : object);
+                            // start the game with the loaded data
+                            GameHelpers.game = null;
+                            GameHelpers.startGame(saveObject.map).then(game => {
+                                game._moves = saveObject.moves;
+                                game._states = saveObject.states;
+                                game._player._x = saveObject.playerPosition.x;
+                                game._player._y = saveObject.playerPosition.y;
 
-                        // add crates to the map from their saved position
-                        saveObject.crates.forEach(cratePosition => game._map._mapObjects[cratePosition] = MapObject.CRATE);
+                                // remove all crates from the loaded map
+                                game._map._mapObjects = game._map._mapObjects.map(object => object === MapObject.CRATE ? MapObject.FLOOR : object);
 
-                        game.render();
+                                // add crates to the map from their saved position
+                                saveObject.crates.forEach(cratePosition => game._map._mapObjects[cratePosition] = MapObject.CRATE);
+
+                                game.render();
+                            });
+
+                            hideOverlay(overlay);
+                        } catch (e) {
+                            hideOverlay(overlay);
+                            showError("Failed to load saved game");
+                        }
                     });
+                } catch(e) {
                     hideOverlay(overlay);
-                });
+                    showError("Failed to load saved game");
+                }
             }
             else {
+                // no save data found
                 showError("No saved game found");
             }
         }
@@ -166,83 +188,104 @@ const GameHelpers = {
         }
     },
 
+    /**
+     * Initializes the game controls (makes buttons in the play section, "active game" screen, usable)
+     */
     initGameControls: function() {
-        if (!GameHelpers.controlsInit) {
-            document.querySelectorAll(".game-controls button").forEach(button => {
-                const action = button.dataset.action;
-                let desiredEffect = null;
+        // don't do anything if the controls were already initialized
+        if (GameHelpers.controlsInit)
+            return;
 
-                switch (action) {
-                    case "up":
-                        desiredEffect = () => GameHelpers.game.move(Direction.UP);
-                        break;
-                    case "left":
-                        desiredEffect = () => GameHelpers.game.move(Direction.LEFT);
-                        break;
-                    case "down":
-                        desiredEffect = () => GameHelpers.game.move(Direction.DOWN);
-                        break;
-                    case "right":
-                        desiredEffect = () => GameHelpers.game.move(Direction.RIGHT);
-                        break;
-                    case "undo":
-                        desiredEffect = () => GameHelpers.game.undoMove();
-                        break;
-                }
+        // buttons for controlling player movement
+        document.querySelectorAll(".game-controls button").forEach(button => {
+            const action = button.dataset.action;
+            let desiredEffect = null;
 
-                if (desiredEffect) {
-                    button.addEventListener("click", () => {
-                        try {
-                            desiredEffect();
-                        } catch (e) {
-                            // ignore error
-                        }
-                    });
-                }
-            });
+            switch (action) {
+                case "up":
+                    desiredEffect = () => GameHelpers.game.move(Direction.UP);
+                    break;
+                case "left":
+                    desiredEffect = () => GameHelpers.game.move(Direction.LEFT);
+                    break;
+                case "down":
+                    desiredEffect = () => GameHelpers.game.move(Direction.DOWN);
+                    break;
+                case "right":
+                    desiredEffect = () => GameHelpers.game.move(Direction.RIGHT);
+                    break;
+                case "undo":
+                    desiredEffect = () => GameHelpers.game.undoMove();
+                    break;
+            }
 
-            document.querySelector(".game-controls-settings input[data-action='show-controls']").addEventListener("change", e => {
-                if (e.target.checked)
-                    document.querySelector(".game-controls").classList.remove("hidden");
-                else
-                    document.querySelector(".game-controls").classList.add("hidden");
-            });
-
-            document.querySelector("button[data-action='restart-game']").addEventListener("click", () => {
-                showConfirm("Are you sure you want to restart current game?", () => {
-                    GameHelpers.game.restartGame();
-                    GameHelpers.game.render();
+            if (desiredEffect) {
+                button.addEventListener("click", () => {
+                    try {
+                        desiredEffect();
+                    } catch (e) {
+                        // ignore error
+                    }
                 });
-            });
-            document.querySelector("button[data-action='abandon-game']").addEventListener("click", () => {
-                showConfirm("Are you sure you want to abandon current game?", () => {
-                    GameHelpers.game = null;
-                    GameHelpers.gameState = -1;
-                    GameHelpers.advanceGameState();
-                });
-            });
-            document.querySelector("button[data-action='save-game']").addEventListener("click", () => {
-                GameHelpers.saveGame();
-            });
+            }
+        });
 
-            document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", e => {
-                const action = e.target.checked ? "disable" : "enable";
-                $(".game-controls").draggable(action).css({cursor: e.target.checked ? "default" : "move"});
-            });
-            $(".game-controls").draggable().draggable("disable");
+        // "show controls" checkbox
+        document.querySelector(".game-controls-settings input[data-action='show-controls']").addEventListener("change", e => {
+            if (e.target.checked)
+                document.querySelector(".game-controls").classList.remove("hidden");
+            else
+                document.querySelector(".game-controls").classList.add("hidden");
+        });
 
-            GameHelpers.controlsInit = true;
-        }
+        // "restart game" button
+        document.querySelector("button[data-action='restart-game']").addEventListener("click", () => {
+            showConfirm("Are you sure you want to restart current game?", () => {
+                GameHelpers.game.restartGame();
+                GameHelpers.game.render();
+            });
+        });
+
+        // "abandon game" button
+        document.querySelector("button[data-action='abandon-game']").addEventListener("click", () => {
+            showConfirm("Are you sure you want to abandon current game?", () => {
+                GameHelpers.game = null;
+                GameHelpers.gameState = -1;
+                GameHelpers.advanceGameState();
+            });
+        });
+
+        // "save game" button
+        document.querySelector("button[data-action='save-game']").addEventListener("click", () => {
+            GameHelpers.saveGame();
+        });
+
+        // "lock controls movement" checkbox - following 5 lines are the only jQuery/jQueryUI dependency in this entire project
+        document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", e => {
+            const action = e.target.checked ? "disable" : "enable";
+            $(".game-controls").draggable(action).css({cursor: e.target.checked ? "default" : "move"});
+        });
+        $(".game-controls").draggable().draggable("disable");
+
+        // game controls were initialized
+        GameHelpers.controlsInit = true;
     },
 
+    /**
+     * Starts the game (moves from map select screen to active game screen)
+     * @param map {Object} map object ( format: {id: mapId (integer), data: mapData (json map data)} ) with the map data
+     * @returns {Promise} promise that is resolved when the game has been started
+     */
     startGame: function(map) {
         return new Promise((resolve, reject) => {
+            // show "active game" screen
             if (GameHelpers.gameState !== GameState.ACTIVE_GAME) {
                 GameHelpers.advanceGameState();
                 document.querySelector("#play > div[data-game-state ~= 'active-game']").style.display = "block";
                 GameHelpers.registerKeyListeners();
             }
 
+            // init the game instance
             if (GameHelpers.game === null) {
                 GameHelpers.game = 0; // to make sure game is no longer "null" (avoids multiple load attempts)
                 GameHelpers.mapId = map.id;
@@ -258,15 +301,19 @@ const GameHelpers = {
         });
     },
 
+    /**
+     * Performs "map completed" logic - moves to "achieved score" screen, fills in score values on the page
+     */
     finishGame: function() {
-        const moves = GameHelpers.game._moves;
-        GameHelpers.game = null;
+        const moves = GameHelpers.game._moves; // moves that were performed to complete the map
+        GameHelpers.game = null; // reset the game instance back to null
 
-        //remove existing congratulation text
+        // remove existing congratulation text
         const existingCongratulationText = document.querySelector("#play div[data-game-state='finished-game'] > h2");
         if (existingCongratulationText !== null)
             existingCongratulationText.parentElement.removeChild(existingCongratulationText);
 
+        // add updated congratulations text
         const targetParent = document.querySelector("#play div[data-game-state='finished-game']");
         const targetSibling = document.querySelector("#play div[data-game-state='finished-game'] > p");
         const victoryText = document.createElement("h2");
@@ -277,8 +324,8 @@ const GameHelpers = {
         const offlineMapBlock = document.querySelector("div[data-game-state='finished-game'] p[data-map-type ~= 'offline']");
         const scoreboardButton = document.querySelector("div[data-game-state='finished-game'] button[data-action = 'advance-game-state']");
 
-        // online map
         if (GameHelpers.mapId > 0) {
+            // online map (loaded from server) - score can be submitted to the server
             onlineMapBlock.style.display = "block";
             offlineMapBlock.style.display = "none";
             scoreboardButton.style.display = "";
@@ -298,11 +345,14 @@ const GameHelpers = {
             const newSubmitButton = submitButton.cloneNode(true);
             submitButton.parentElement.replaceChild(newSubmitButton, submitButton);
 
-            const submitScoreEventListener = () => {
-                const name = nameInput.value.trim();
+            // function for sending the score to the server
+            const submitScore = () => {
+                const name = nameInput.value.trim(); // player name
 
+                // name must contain at least 3 letters (arbitrary limit)
                 if (name.length > 2) {
-                    newSubmitButton.removeEventListener("click", submitScoreEventListener);
+                    // to prevent multiple send attempts, remove the function as a click listener from the submit button
+                    newSubmitButton.removeEventListener("click", submitScore);
                     const overlay = showOverlay("Submitting your score, please wait...");
 
                     ajaxRequest("POST", Server.address + Server.scorePath, JSON.stringify({
@@ -311,15 +361,21 @@ const GameHelpers = {
                         moves: moves.length
                     })).then(response => {
                         hideOverlay(overlay);
+
+                        // server response contains the position that player's score achieved - display it above the scoreboard
+                        // in the next screen
                         const newPositionInfoElement = document.createElement("p");
                         newPositionInfoElement.innerHTML = `You placed at position ${response} with your score of ${moves.length} moves.`;
                         const targetSibling = document.querySelector("div[data-game-state='score-table'] > h2");
                         targetSibling.parentElement.insertBefore(newPositionInfoElement, targetSibling);
+
+                        // move to the scoretable screen
                         GameHelpers.advanceGameState();
                     }).catch(error => {
+                        //error occurred during the request - score wasn't submitted
                         hideOverlay(overlay);
                         showError("Error occurred while submitting your score, please retry.");
-                        newSubmitButton.addEventListener("click", submitScoreEventListener);
+                        newSubmitButton.addEventListener("click", submitScore);
                     });
                 }
                 else {
@@ -327,20 +383,28 @@ const GameHelpers = {
                 }
             };
 
-            newSubmitButton.addEventListener("click", submitScoreEventListener);
+            // add the submitScore function as a click listener to the "Submit Score" button
+            newSubmitButton.addEventListener("click", submitScore);
         }
         else {
+            // offline map (loaded from local file) - score can't be submitted
             onlineMapBlock.style.display = "none";
             offlineMapBlock.style.display = "block";
             scoreboardButton.style.display = "none";
         }
     },
 
+    /**
+     * Moves to the next game screen
+     */
     advanceGameState: function() {
+        // to assure cyclical movement between the screens (advance from the last screen results in the first screen)
         GameHelpers.gameState = (GameHelpers.gameState + 1) % Object.keys(GameState).length;
 
+        // hide all the screens
         document.querySelectorAll("#play > div").forEach(element => element.style.display = "none");
 
+        // show screen based on current gameState
         switch (GameHelpers.gameState) {
             case GameState.MAP_SELECT:
                 GameHelpers.removeKeyListeners();
@@ -349,6 +413,7 @@ const GameHelpers = {
                 break;
 
             case GameState.ACTIVE_GAME:
+                // this screen has custom logic (startGame() function)
                 break;
 
             case GameState.FINISHED_GAME:
@@ -360,10 +425,12 @@ const GameHelpers = {
             case GameState.SCORE_TABLE:
                 document.querySelector("#play > div[data-game-state ~= 'score-table']").style.display = "block";
 
+                // reset scoretable content
                 const tableBody = document.querySelector("#play > div[data-game-state ~= 'score-table'] table > tbody");
                 tableBody.innerHTML = "";
                 const overlay = showOverlay("Loading scoreboard, please wait...");
 
+                // load the scoretable
                 ajaxRequest("GET", Server.address + Server.scorePath + "/" + GameHelpers.mapId + "/10").then(response => {
                     hideOverlay(overlay);
                     const scoreEntries = JSON.parse(response);
@@ -383,4 +450,3 @@ const GameHelpers = {
         }
     },
 };
-

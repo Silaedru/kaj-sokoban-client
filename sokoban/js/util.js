@@ -102,7 +102,7 @@ function showError(message) {
 function showOverlay(message, showLoader = true) {
     // to avoid flashing that happens show and hide overlay are called in short span of time, this function waits 100ms
     // before actually showing the overlay
-    return setTimeout( () => {
+    return setTimeout(() => {
         document.querySelector("div[data-modal-type='overlay'] .loader").style.display = showLoader ? "block" : "none";
         document.querySelector("div[data-modal-type='overlay'] .progress").innerText = "";
         document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
@@ -118,7 +118,7 @@ function hideOverlay(overlayTimeout) {
     clearTimeout(overlayTimeout); // clear timeout by showOverlay in case it's still set
 
     // before hiding the overlay wait 600ms (this does nothing if 100ms hasn't passed since showOverlay was called) to
-    // avoid quick flash of the overlay
+    // avoid unwanted quick flash of the overlay
     setTimeout(() => document.querySelector("div[data-modal-type='overlay']").style.display = "none", 600);
 }
 
@@ -132,7 +132,7 @@ function showConfirm(message, confirmedCallback = undefined, cancelledCallback =
     document.querySelector("div[data-modal-type='confirm'] .modal-content > div").innerText = message;
     document.querySelector("div[data-modal-type='confirm']").style.display = "flex";
 
-    // clearing the buttons of existing listeners
+    // clear the buttons of existing listeners
     const yesButton = document.querySelector("div[data-modal-type='confirm'] .modal-content button[data-action='yes']");
     const clonedYesButton = yesButton.cloneNode(true);
     yesButton.parentElement.replaceChild(clonedYesButton, yesButton);
@@ -141,13 +141,12 @@ function showConfirm(message, confirmedCallback = undefined, cancelledCallback =
     const clonedNoButton = noButton.cloneNode(true);
     noButton.parentElement.replaceChild(clonedNoButton, noButton);
 
-    // add callbacks as listeners to "new" buttons
+    // add callbacks as listeners to the "new" buttons
     clonedYesButton.addEventListener("click", () => {
         document.querySelector("div[data-modal-type='confirm']").style.display = "none"; // hide the modal overlay
         if (confirmedCallback) // call the callback
             confirmedCallback();
     });
-
     clonedNoButton.addEventListener("click", () => {
         document.querySelector("div[data-modal-type='confirm']").style.display = "none"; // hide the modal overlay
         if (cancelledCallback) // call the callback

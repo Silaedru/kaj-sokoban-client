@@ -75,7 +75,7 @@ const Sections = [
             if (GameHelpers.gameState === GameState.ACTIVE_GAME)
                 GameHelpers.registerKeyListeners();
         },
-        unloadAction: GameHelpers.removeKeyListeners // on unload of the play section, remove the key event listeners - since
+        unloadAction: GameHelpers.removeKeyListeners // on unload of the play section, remove the key event listeners
     }
 ];
 
