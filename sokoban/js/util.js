@@ -96,12 +96,15 @@ function showError(message) {
 /**
  * After 100ms shows a modal overlay on the page without any elements for user interaction
  * @param message {string} message to be shown
+ * @param showLoader {boolean} true by default; if true, loading wheel will be shown
  * @returns {number} returns timeout identifier for hideOverlay
  */
-function showOverlay(message) {
+function showOverlay(message, showLoader = true) {
     // to avoid flashing that happens show and hide overlay are called in short span of time, this function waits 100ms
     // before actually showing the overlay
     return setTimeout( () => {
+        document.querySelector("div[data-modal-type='overlay'] .loader").style.display = showLoader ? "block" : "none";
+        document.querySelector("div[data-modal-type='overlay'] .progress").innerText = "";
         document.querySelector("div[data-modal-type='overlay'] .modal-content > div").innerText = message;
         document.querySelector("div[data-modal-type='overlay']").style.display = "flex";
     }, 100);

@@ -49,3 +49,26 @@
 .modal .modal-content div {
     padding: 0.25em 0.7em;
 }
+
+@keyframes loader-animation {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 0 calc(-35px * 30);
+    }
+}
+
+.loader {
+    width: 35px;
+    height: 35px;
+    margin: 0 auto;
+    padding: 0 !important;
+    background: url("../media/ui/loader_strip.png") no-repeat;
+    background-size: 35px calc(35px * 30);
+    animation: loader-animation steps(30) 500ms infinite;
+}
+
+.progress:empty + span {
+    display: none;
+}

@@ -16,11 +16,11 @@
         <script src="js/lib/lzma_worker-min.js"></script>
 
         <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/media.css">
         <link rel="stylesheet" href="css/controls.css">
         <link rel="stylesheet" href="css/mapselect.css">
         <link rel="stylesheet" href="css/scoreboard.css">
         <link rel="stylesheet" href="css/modals.css">
+        <link rel="stylesheet" href="css/media.css">
 
         <script src="js/util.js"></script>
         <script src="js/resources.js"></script>
@@ -114,7 +114,11 @@
             </div>
         </div>
         <div class="modal flex-center unselectable" data-modal-type="overlay">
-            <div class="modal-content"><div></div></div>
+            <div class="modal-content">
+                <div></div>
+                <span class="progress"></span><span>%</span>
+                <div class="loader"></div>
+            </div>
         </div>
 
         <section id="home">
@@ -359,7 +363,7 @@
         </section>
 
         <footer class="flex-center">
-            <a href="#about">&copy; 2018</a>
+            &copy; 2018
         </footer>
     </body>
 </html>

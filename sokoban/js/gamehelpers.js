@@ -101,7 +101,7 @@ const GameHelpers = {
             };
 
             // this process can take a while - lock out the player by showing an overlay and removing keyboard event listeners
-            const overlay = showOverlay("Saving, please wait... (this can take a while if you've made a lot of moves)");
+            const overlay = showOverlay("Saving, please wait...", false);
             GameHelpers.removeKeyListeners();
 
             // compress the stringified SaveObject before saving it to local storage
@@ -119,7 +119,10 @@ const GameHelpers = {
                 // set timeout to remove the success text from the document after a while
                 setTimeout(() => {
                     successMessage.classList.add("text-suppressed");
-                }, 2500);
+                }, 4000);
+            }, progress => {
+                // display progress
+                document.querySelector("div[data-modal-type='overlay'] .progress").innerText = Math.round(progress*100);
             });
         }
         else {

@@ -37,6 +37,10 @@ nav a:visited {
     color: #000;
 }
 
+nav a:hover {
+    text-decoration: none;
+}
+
 nav > input[type="checkbox"], nav > input[type="checkbox"]+label {
     display: none;
 }
@@ -159,7 +163,7 @@ table {
 .img-container img {
     display: block;
     margin-right: 0.75em;
-    width: 200px;
+    max-width: 200px;
 }
 
 .img-container img + small {
@@ -184,6 +188,10 @@ a {
 
 a:visited {
     color: blue;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 footer a, footer a:visited {
