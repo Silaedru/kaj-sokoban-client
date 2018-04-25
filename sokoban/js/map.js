@@ -54,6 +54,9 @@ const MapUtils = {
             hideOverlay(overlay);
             MapUtils.loadedMaps = [null]; // to prevent retries on map reload
             showNotification("Failed to retrieve maps from the server");
+
+            // show the element with a persistent and more detailed error description
+            document.querySelector("#play div[data-game-state='map-select'] div.map-preview-container > p").style.display = "block";
         });
     },
 

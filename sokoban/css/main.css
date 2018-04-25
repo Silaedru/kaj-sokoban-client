@@ -201,3 +201,7 @@ footer a, footer a:visited {
 h4 {
     margin-bottom: 0.25em;
 }
+
+#play div[data-game-state='map-select'] div.map-preview-container > p {
+    display: none;
+}
