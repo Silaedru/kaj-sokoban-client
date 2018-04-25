@@ -84,12 +84,12 @@ function createSvgRect(x, y, width, height, fill) {
 }
 
 /**
- * Escapes sensitive special characters with HTML entities
+ * Replaces sensitive special characters with HTML entities
  * @param string {string} string to be escaped
  * @returns {string} escaped string
  */
 function escapeHTML(string) {
-    return string.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return String(string).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 /**
