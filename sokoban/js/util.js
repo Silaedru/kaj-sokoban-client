@@ -21,7 +21,7 @@ const KeyCode = {
 const Server = {
     address: "http://dixneuf.nevesnican.cz:10500",
     mapsPath: "/maps",
-    scorePath: "/score",
+    scorePath: "/scores",
 };
 
 /**
