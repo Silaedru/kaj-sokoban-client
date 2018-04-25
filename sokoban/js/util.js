@@ -63,7 +63,7 @@ function ajaxRequest(method, target, payload = undefined) {
 }
 
 /**
- * Creates a svg rectangle (rect)
+ * Creates a svg rectangle
  * @param x {string} x attribute
  * @param y {string} y attribute
  * @param width {string} width attribute
@@ -81,6 +81,15 @@ function createSvgRect(x, y, width, height, fill) {
     rect.setAttributeNS(null, "fill", fill);
 
     return rect;
+}
+
+/**
+ * Escapes sensitive special characters with HTML entities
+ * @param string {string} string to be escaped
+ * @returns {string} escaped string
+ */
+function escapeHTML(string) {
+    return string.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 /**

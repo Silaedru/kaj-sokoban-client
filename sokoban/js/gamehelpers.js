@@ -317,7 +317,7 @@ const GameHelpers = {
         const targetParent = document.querySelector("#play div[data-game-state='finished-game']");
         const targetSibling = document.querySelector("#play div[data-game-state='finished-game'] > p");
         const victoryText = document.createElement("h2");
-        victoryText.innerHTML = `Congratulations! You finished in ${moves.length} moves`;
+        victoryText.innerText = `Congratulations! You finished in ${moves.length} moves`;
         targetParent.insertBefore(victoryText, targetSibling);
 
         const onlineMapBlock = document.querySelector("div[data-game-state='finished-game'] p[data-map-type ~= 'online']");
@@ -365,7 +365,7 @@ const GameHelpers = {
                         // server response contains the position that player's score achieved - display it above the scoreboard
                         // in the next screen
                         const newPositionInfoElement = document.createElement("p");
-                        newPositionInfoElement.innerHTML = `You placed at position ${response} with your score of ${moves.length} moves.`;
+                        newPositionInfoElement.innerText = `You placed at position ${response} with your score of ${moves.length} moves.`;
                         const targetSibling = document.querySelector("div[data-game-state='score-table'] > h2");
                         targetSibling.parentElement.insertBefore(newPositionInfoElement, targetSibling);
 
@@ -439,7 +439,11 @@ const GameHelpers = {
                     scoreEntries.sort((a, b) => a.position - b.position);
 
                     scoreEntries.forEach(scoreEntry => {
-                        tableBody.innerHTML += `<tr><td>${scoreEntry.position}</td><td>${scoreEntry.name}</td><td>${scoreEntry.moves}</td></tr>`;
+                        tableBody.innerHTML += `<tr>
+                                    <td>${escapeHTML(scoreEntry.position)}</td>
+                                    <td>${escapeHTML(scoreEntry.name)}</td>
+                                    <td>${escapeHTML(scoreEntry.moves)}</td>
+                                </tr>`;
                     });
                 }).catch(error => {
                     hideOverlay(overlay);

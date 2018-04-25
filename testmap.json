@@ -1,9 +1,0 @@
-{
-  "width": 7,
-  "height": 7,
-
-  "walls": [5, 6, 7],
-  "crates": [31],
-  "targets": [25],
-  "player": 32
-}
