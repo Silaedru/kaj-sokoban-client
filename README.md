@@ -1,7 +1,12 @@
 # Sokoban
-Implementation of sokoban game made in javascript
+A sokoban game made in ECMAscript 6.
 
-*Currently work in progress*
+
+## Related projects
+### Sokoban Server
+
+### Sokoban Mapeditor
+
 
 ## Used libraries
 **[jQuery](http://jquery.com/)**
