@@ -106,7 +106,12 @@ const GameHelpers = {
 
             // compress the stringified SaveObject before saving it to local storage
             LZMA.compress(JSON.stringify(saveObject), 2, (result, error) => {
-                localStorage.setItem("sokoban-save", JSON.stringify(result)); // save the result to local storage (it needs to be stringified since it's an array of integers that represent the compressed data)
+                try {
+                    localStorage.setItem("sokoban-save", JSON.stringify(result)); // save the result to local storage (it needs to be stringified since it's an array of integers that represent the compressed data)
+                }
+                catch (e) {
+                    showError("Cannot save the game because of browser restrictions");
+                }
 
                 // restore player's access to the game
                 hideOverlay(overlay);
@@ -136,7 +141,14 @@ const GameHelpers = {
     loadGame: function() {
         // verify that localStorage is supported
         if (typeof(Storage) !== "undefined") {
-            const save = localStorage.getItem("sokoban-save"); // get the save data from localStorage
+            let save = null;
+
+            try {
+                save = localStorage.getItem("sokoban-save"); // get the save data from localStorage
+            }
+            catch (e) {
+                // ignor eerror
+            }
 
             if (save !== null) {
                 // if there were any save data
