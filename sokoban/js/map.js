@@ -29,6 +29,15 @@ const MapUtils = {
         if (MapUtils.loadedMaps.length > 0) // if the maps were already loaded, do nothing
             return;
 
+        // check if we're offline
+        if (!navigator.onLine) {
+            showNotification("Cannot load maps from the server because the application is in offline mode");
+
+            // show the element with a persistent and more detailed error description
+            document.querySelector("#play div[data-game-state='map-select'] div.map-preview-container > p").style.display = "block";
+            return;
+        }
+
         const overlay = showOverlay("Loading maps, please wait...");
         ajaxRequest("GET", Server.address + Server.mapsPath).then(response => {
             hideOverlay(overlay);

@@ -365,30 +365,39 @@ const GameHelpers = {
                 if (name.length > 2) {
                     // to prevent multiple send attempts, remove the function as a click listener from the submit button
                     newSubmitButton.removeEventListener("click", submitScore);
-                    const overlay = showOverlay("Submitting your score, please wait...");
 
-                    ajaxRequest("POST", Server.address + Server.scorePath, JSON.stringify({
-                        mapId: GameHelpers.mapId,
-                        name: name,
-                        moves: moves.length
-                    })).then(response => {
-                        hideOverlay(overlay);
+                    if (navigator.onLine) {
+                        // if we're online try submitting the score
 
-                        // server response contains the position that player's score achieved - display it above the scoreboard
-                        // in the next screen
-                        const newPositionInfoElement = document.createElement("p");
-                        newPositionInfoElement.innerText = `You placed at position ${response} with your score of ${moves.length} moves.`;
-                        const targetSibling = document.querySelector("div[data-game-state='score-table'] > h2");
-                        targetSibling.parentElement.insertBefore(newPositionInfoElement, targetSibling);
+                        const overlay = showOverlay("Submitting your score, please wait...");
 
-                        // move to the scoretable screen
-                        GameHelpers.advanceGameState();
-                    }).catch(error => {
-                        //error occurred during the request - score wasn't submitted
-                        hideOverlay(overlay);
-                        showError("Error occurred while submitting your score, please retry.");
-                        newSubmitButton.addEventListener("click", submitScore);
-                    });
+                        ajaxRequest("POST", Server.address + Server.scorePath, JSON.stringify({
+                            mapId: GameHelpers.mapId,
+                            name: name,
+                            moves: moves.length
+                        })).then(response => {
+                            hideOverlay(overlay);
+
+                            // server response contains the position that player's score achieved - display it above the scoreboard
+                            // in the next screen
+                            const newPositionInfoElement = document.createElement("p");
+                            newPositionInfoElement.innerText = `You placed at position ${response} with your score of ${moves.length} moves.`;
+                            const targetSibling = document.querySelector("div[data-game-state='score-table'] > h2");
+                            targetSibling.parentElement.insertBefore(newPositionInfoElement, targetSibling);
+
+                            // move to the scoretable screen
+                            GameHelpers.advanceGameState();
+                        }).catch(error => {
+                            //error occurred during the request - score wasn't submitted
+                            hideOverlay(overlay);
+                            showError("Error occurred while submitting your score, please retry.");
+                            newSubmitButton.addEventListener("click", submitScore);
+                        });
+                    }
+                    else {
+                        // show error instead if we're offline
+                        showError("Cannot submit your score because the application is in offline mode");
+                    }
                 }
                 else {
                     showError("Please enter at least 3 visible characters as your nickname");
@@ -440,27 +449,34 @@ const GameHelpers = {
                 // reset scoretable content
                 const tableBody = document.querySelector("#play > div[data-game-state ~= 'score-table'] table > tbody");
                 tableBody.innerHTML = "";
-                const overlay = showOverlay("Loading scoreboard, please wait...");
 
-                // load the scoretable
-                ajaxRequest("GET", Server.address + Server.scorePath + "/" + GameHelpers.mapId + "/10").then(response => {
-                    hideOverlay(overlay);
-                    const scoreEntries = JSON.parse(response);
+                // attempt to load the scoretable
+                if (navigator.onLine) {
+                    const overlay = showOverlay("Loading scoreboard, please wait...");
 
-                    // just to make sure the scores are sorted properly
-                    scoreEntries.sort((a, b) => a.position - b.position);
+                    ajaxRequest("GET", Server.address + Server.scorePath + "/" + GameHelpers.mapId + "/10").then(response => {
+                        hideOverlay(overlay);
+                        const scoreEntries = JSON.parse(response);
 
-                    scoreEntries.forEach(scoreEntry => {
-                        tableBody.innerHTML += `<tr>
+                        // just to make sure the scores are sorted properly
+                        scoreEntries.sort((a, b) => a.position - b.position);
+
+                        scoreEntries.forEach(scoreEntry => {
+                            tableBody.innerHTML += `<tr>
                                     <td>${escapeHTML(scoreEntry.position)}</td>
                                     <td>${escapeHTML(scoreEntry.name)}</td>
                                     <td>${escapeHTML(scoreEntry.moves)}</td>
                                 </tr>`;
+                        });
+                    }).catch(error => {
+                        hideOverlay(overlay);
+                        showNotification("Failed to retrieve scoreboard from the server");
                     });
-                }).catch(error => {
-                    hideOverlay(overlay);
-                    showNotification("Failed to retrieve scoreboard from the server");
-                });
+                }
+                else {
+                    // show error if we're offline
+                    showNotification("Cannot load the scoreboard because the application is in offline mode");
+                }
 
                 break;
         }
