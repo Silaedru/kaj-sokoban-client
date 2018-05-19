@@ -243,12 +243,18 @@ const GameHelpers = {
         });
 
         // "show controls" checkbox
-        document.querySelector(".game-controls-settings input[data-action='show-controls']").addEventListener("change", e => {
-            if (e.target.checked)
+        const showControlsValueChangedCallback = showControlsElement => {
+            if (showControlsElement.checked)
                 document.querySelector(".game-controls").classList.remove("hidden");
             else
                 document.querySelector(".game-controls").classList.add("hidden");
-        });
+        }
+
+        // this is done because some browsers persist checkbox state through page refresh which may cause initial "desync" between checkbox
+        // value and its action
+        const showControlsCheckboxElement = document.querySelector(".game-controls-settings input[data-action='show-controls']");
+        showControlsCheckboxElement.addEventListener("change", e => showControlsValueChangedCallback(e.target));
+        showControlsValueChangedCallback(showControlsCheckboxElement); // initial input state check 
 
         // "restart game" button
         document.querySelector("button[data-action='restart-game']").addEventListener("click", () => {
@@ -272,12 +278,21 @@ const GameHelpers = {
             GameHelpers.saveGame();
         });
 
-        // "lock controls movement" checkbox - following 5 lines are the only jQuery/jQueryUI dependency in this entire project
-        document.querySelector(".game-controls-settings input[data-action='lock-controls']").addEventListener("change", e => {
-            const action = e.target.checked ? "disable" : "enable";
-            $(".game-controls").draggable(action).css({cursor: e.target.checked ? "default" : "move"});
-        });
-        $(".game-controls").draggable().draggable("disable");
+
+        // "lock controls movement" checkbox - following few lines are the only jQuery/jQueryUI dependency (because I'm lazy) in this entire project
+        // same kind of check (checkbox value persistence through page refresh) as in show controls checkbox
+        const lockControlsValueChangedCallback = lockControlsElement => {
+            const lockMovement = lockControlsElement.checked;
+            const action = lockMovement ? "disable" : "enable";
+            $(".game-controls").draggable(action).css({cursor: lockMovement ? "default" : "move"});
+        }
+
+        const lockControlsCheckboxElement = document.querySelector(".game-controls-settings input[data-action='lock-controls']");
+        lockControlsCheckboxElement.addEventListener("change", e => lockControlsValueChangedCallback(e.target));
+        $(".game-controls").draggable(); // draggable init
+        lockControlsValueChangedCallback(lockControlsCheckboxElement); // initial input state check
+        // end of jQuery/jQueryUI dependency
+
 
         // game controls were initialized
         GameHelpers.controlsInit = true;
