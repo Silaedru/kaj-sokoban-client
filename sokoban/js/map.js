@@ -98,6 +98,19 @@ const MapUtils = {
         // of 10*10
         svg.setAttributeNS(null, "viewBox", `0 0 ${10 * mapData.width} ${10 * mapData.height}`);
 
+        // "hack" for webkit: webkit treats svg inside flexbox container without explicit size declaration as if it has
+        // both width and height of 0; css takes care of the actual size (max-width and max-height) and this just makes sure
+        // that the svg will fill its container (by oversizing it)
+        // only one of the width/height parameters so that the svg keeps its aspect ratio
+        // this is not needed on gecko, but it doesn't do any harm
+        if (mapData.width > mapData.height) {
+            svg.setAttributeNS(null, "width", `${1000 * mapData.width}px`);
+        }
+        else {
+            svg.setAttributeNS(null, "height", `${1000 * mapData.height}px`);
+        }
+
+
         // for each map tile
         for (let i=0; i<mapData.width * mapData.height; i++) {
             let fill = null;
@@ -107,13 +120,13 @@ const MapUtils = {
                 fill = MapObjectColor[MapObject.PLAYER];
             }
             else if (mapData.targets.includes(i)) {
-                fill = MapObjectColor[MapObject.TARGET]
+                fill = MapObjectColor[MapObject.TARGET];
             }
             else if (mapData.crates.includes(i)) {
-                fill = MapObjectColor[MapObject.CRATE]
+                fill = MapObjectColor[MapObject.CRATE];
             }
             else if (mapData.walls.includes(i)) {
-                fill = MapObjectColor[MapObject.WALL]
+                fill = MapObjectColor[MapObject.WALL];
             }
 
             // don't add empty tiles to the main svg for performance reasons
