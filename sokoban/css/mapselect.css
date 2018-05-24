@@ -26,8 +26,8 @@
 
 .map-preview:hover {
     border: 1px solid #ac0000;
-    width: calc(7.5em*1.1);
-    height: calc(7em*1.1);
+    /*width: calc(7.5em*1.1);
+    height: calc(7em*1.1);*/
     transition: all 150ms linear;
 }
 
